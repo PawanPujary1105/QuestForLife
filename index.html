@@ -1,17 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-	<link href="css/main.css" rel="stylesheet">
-    <title>Quest4Life</title>
-</head>
-<body>
 
-	
-	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Quest 4 Life</title>
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="stylesheet" href="css/main.css">
+  <script src="js/main.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <div class="nav">
+      <div class="brand">
+        <div class="logo">Q4L</div>
+        <div>
+          <div>Quest 4 Life</div>
+          <div class="muted" style="font-size:12px">Movies • Gym • Recipes</div>
+        </div>
+      </div>
+      <div class="nav-tabs" role="tablist" aria-label="Sections">
+        <button class="tab active" data-view="home" aria-selected="true">Home</button>
+        <button class="tab" data-view="movies">Movie Tracker</button>
+        <button class="tab" data-view="gym">Gym Tracker</button>
+        <button class="tab" data-view="recipes">Recipe Tracker</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- HOME -->
+    <section id="view-home" class="panel" aria-labelledby="home-title">
+      <div class="panel-header">
+        <div>
+          <div class="title" id="home-title">Welcome</div>
+          <div class="muted">Choose a module to get started. You can extend each module later.</div>
+        </div>
+      </div>
+
+      <div class="home-grid">
+        <div class="home-card" data-go="movies" tabindex="0" role="button" aria-label="Movie Tracker">
+          <div>
+            <h3>🎬 Movie Tracker</h3>
+            <p>Keep a list of movies to watch with language, platform & cast.</p>
+          </div>
+          <div class="cta">Open →</div>
+        </div>
+        <div class="home-card" data-go="gym" tabindex="0" role="button" aria-label="Gym Tracker">
+          <div>
+            <h3>💪 Gym Tracker</h3>
+            <p>Plan exercises, sets and track progress. (Stub included – extend later.)</p>
+          </div>
+          <div class="cta">Open →</div>
+        </div>
+        <div class="home-card" data-go="recipes" tabindex="0" role="button" aria-label="Recipe Tracker">
+          <div>
+            <h3>🍳 Recipe Tracker</h3>
+            <p>Collect recipes & ingredients. (Stub included – extend later.)</p>
+          </div>
+          <div class="cta">Open →</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MOVIES -->
+    <section id="view-movies" class="panel hidden" aria-labelledby="movies-title">
+      <div class="panel-header">
+        <div>
+          <div class="title" id="movies-title">🎬 Movie Tracker</div>
+          <div class="muted">Add movies to watch. Data is saved locally (and optionally to a chosen folder).</div>
+        </div>
+        <div class="controls">
+          <button id="btn-add-movie" class="btn primary" title="Add a new movie">＋ Add Movie</button>
+          <button id="btn-select-folder" class="btn accent hidden" title="Select a folder to save a JSON file">💾 Select
+            Storage Folder</button>
+          <button id="btn-save-folder" class="btn success hidden" title="Save to selected folder">⬇ Save to
+            Folder</button>
+          <button id="btn-load-folder" class="btn ghost hidden" title="Load from selected folder">⬆ Load from
+            Folder</button>
+          <button id="btn-export" class="btn" title="Export JSON">⤓ Export JSON</button>
+          <label class="btn">
+            ⤒ Import JSON
+            <input id="file-import" type="file" accept="application/json" class="hidden" />
+          </label>
+        </div>
+      </div>
+
+      <div class="row" style="margin-bottom:12px">
+        <div class="col-6">
+          <label for="search-movie">Search</label>
+          <input id="search-movie" class="input" placeholder="Search by name, language, platform, or cast…" />
+        </div>
+        <div class="col-6">
+          <label for="filter-platform">Filter: Platform</label>
+          <select id="filter-platform" class="select">
+            <option value="">All platforms</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="movie-cards" class="cards"></div>
+      <div id="movie-empty" class="empty hidden">No movies yet. Click <b>＋ Add Movie</b> to get started.</div>
+    </section>
+
+    <!-- GYM (stub) -->
+    <section id="view-gym" class="panel hidden" aria-labelledby="gym-title">
+      <div class="panel-header">
+        <div>
+          <div class="title" id="gym-title">💪 Gym Tracker</div>
+          <div class="muted">Stub for now. Add exercises later.</div>
+        </div>
+        <div class="controls">
+          <button class="btn primary" id="btn-add-exercise">＋ Add Exercise</button>
+        </div>
+      </div>
+
+      <div id="gym-list" class="empty">No exercises added yet. (You can extend this section later.)</div>
+    </section>
+
+    <!-- RECIPES (stub) -->
+    <section id="view-recipes" class="panel hidden" aria-labelledby="recipes-title">
+      <div class="panel-header">
+        <div>
+          <div class="title" id="recipes-title">🍳 Recipe Tracker</div>
+          <div class="muted">Stub for now. Add recipes later.</div>
+        </div>
+        <div class="controls">
+          <button class="btn primary" id="btn-add-recipe">＋ Add Recipe</button>
+        </div>
+      </div>
+
+      <div id="recipe-list" class="empty">No recipes added yet. (You can extend this section later.)</div>
+    </section>
+  </main>
+
+  <!-- Add Movie Modal -->
+  <dialog id="modal-movie">
+    <form method="dialog" id="movie-form">
+      <div class="modal-header">
+        <div class="title">Add Movie</div>
+        <button type="button" class="btn ghost" id="movie-close" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12">
+            <label for="mf-name">Movie Name *</label>
+            <input id="mf-name" class="input" placeholder="e.g., Inception" required />
+          </div>
+          <div class="col-6">
+            <label for="mf-language">Language</label>
+            <input id="mf-language" class="input" placeholder="e.g., English" />
+          </div>
+          <div class="col-6">
+            <label for="mf-platform">Streaming Platform</label>
+            <input id="mf-platform" class="input" placeholder="e.g., Netflix, Prime Video" />
+          </div>
+          <div class="col-12">
+            <label for="mf-cast">Starcast (comma-separated)</label>
+            <input id="mf-cast" class="input" placeholder="e.g., Leonardo DiCaprio, Joseph Gordon-Levitt" />
+          </div>
+          <div class="col-12">
+            <div class="muted" style="font-size:12px">Tip: You can update/delete cards later. All data is stored in your
+              browser storage. Optional: save to a folder as JSON.</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="movie-cancel">Cancel</button>
+        <button type="submit" class="btn primary">Save Movie</button>
+      </div>
+    </form>
+  </dialog>
 </body>
+
 </html>
