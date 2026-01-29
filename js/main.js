@@ -10,8 +10,6 @@ const DEFAULT_QFL_DATA = {
 
 let questForLifeData = loadState();
 let currentView = 'home';
-let dirHandle = null; // File System Access API directory handle when selected
-const supportsFS = 'showDirectoryPicker' in window;
 
 function loadState() {
     try {
@@ -275,74 +273,6 @@ btnLoadFolder.addEventListener('change', async (e) => {
         e.target.value = '';
     }
 });
-
-
-/*****************************************
- * Optional: File System Access API path
- *****************************************/
-// const btnSelectFolder = document.getElementById('btn-select-folder');
-// const btnSaveFolder = document.getElementById('btn-save-folder');
-// const btnLoadFolder = document.getElementById('btn-load-folder');
-
-// if (supportsFS) {
-//     btnSelectFolder.classList.remove('hidden');
-//     btnSaveFolder.classList.remove('hidden');
-//     btnLoadFolder.classList.remove('hidden');
-
-//     btnSelectFolder.addEventListener('click', async () => {
-//         try {
-//             dirHandle = await window.showDirectoryPicker({ id: 'life-tracker-folder' });
-//             alert('Folder selected. You can now Save/Load JSON in that folder.');
-//         } catch (err) {
-//             if (err?.name !== 'AbortError') console.warn('Folder selection failed:', err);
-//         }
-//     });
-
-//     btnSaveFolder.addEventListener('click', async () => {
-//         if (!dirHandle) { alert('Please select a storage folder first.'); return; }
-//         try {
-//             const fileHandle = await getOrCreateFileHandle(dirHandle, 'movie-tracker.json');
-//             await writeFile(fileHandle, JSON.stringify({ movies: questForLifeData.movies }, null, 2));
-//             alert('Saved to movie-tracker.json in the selected folder.');
-//         } catch (err) {
-//             console.error(err);
-//             alert('Failed to save to folder. Ensure permissions are granted.');
-//         }
-//     });
-
-//     btnLoadFolder.addEventListener('click', async () => {
-//         if (!dirHandle) { alert('Please select a storage folder first.'); return; }
-//         try {
-//             const fileHandle = await dirHandle.getFileHandle('movie-tracker.json', { create: false });
-//             const file = await fileHandle.getFile();
-//             const text = await file.text();
-//             const data = JSON.parse(text);
-//             if (!data || !Array.isArray(data.movies)) throw new Error('Invalid movie-tracker.json');
-//             questForLifeData.movies = data.movies;
-//             saveState();
-//             alert('Loaded movies from movie-tracker.json');
-//         } catch (err) {
-//             console.error(err);
-//             alert('Failed to load. Ensure movie-tracker.json exists and is valid.');
-//         }
-//     });
-// }
-
-// async function getOrCreateFileHandle(dir, name) {
-//     try {
-//         return await dir.getFileHandle(name, { create: true });
-//     } catch (e) {
-//         // Some browsers require create:false to probe then create
-//         const handle = await dir.getFileHandle(name, { create: false }).catch(() => null);
-//         if (handle) return handle;
-//         return await dir.getFileHandle(name, { create: true });
-//     }
-// }
-// async function writeFile(fileHandle, contents) {
-//     const writable = await fileHandle.createWritable();
-//     await writable.write(contents);
-//     await writable.close();
-// }
 
 /**********************
  * Keyboard shortcuts
