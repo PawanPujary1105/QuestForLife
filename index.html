@@ -14,7 +14,9 @@
   <header>
     <div class="nav">
       <div class="brand">
-        <div class="logo">Q4L</div>
+        <div class="logo">
+          <img src="images/Quest4Life_Logo.png" alt="Quest 4 Life logo" />
+        </div>
         <div>
           <div>Quest 4 Life</div>
           <div class="muted" style="font-size:12px">Movies • Gym • Recipes</div>
@@ -22,9 +24,9 @@
       </div>
       <div class="nav-tabs" role="tablist" aria-label="Sections">
         <button class="tab active" data-view="home" aria-selected="true">Home</button>
-        <button class="tab" data-view="movies">Movie Tracker</button>
-        <button class="tab" data-view="gym">Gym Tracker</button>
-        <button class="tab" data-view="recipes">Recipe Tracker</button>
+        <button class="tab" data-view="movies">Movie Zone</button>
+        <button class="tab" data-view="gym">Gym Zone</button>
+        <button class="tab" data-view="recipes">Recipe Zone</button>
       </div>
     </div>
   </header>
@@ -34,30 +36,30 @@
     <section id="view-home" class="panel" aria-labelledby="home-title">
       <div class="panel-header">
         <div>
-          <div class="title" id="home-title">Welcome</div>
-          <div class="muted">Choose a module to get started. You can extend each module later.</div>
+          <div class="title" id="home-title">Welcome to Quest for Life!</div>
+          <div class="muted">Side quests strongly recommended. Main quest is… complicated.</div>
         </div>
       </div>
 
       <div class="home-grid">
-        <div class="home-card" data-go="movies" tabindex="0" role="button" aria-label="Movie Tracker">
+        <div class="home-card" data-go="movies" tabindex="0" role="button" aria-label="Movie Zone">
           <div>
-            <h3>🎬 Movie Tracker</h3>
-            <p>Keep a list of movies to watch with language, platform & cast.</p>
+            <h3>🎬 Movie Zone</h3>
+            <p>Track movies you want to watch — so you stop rewatching the same ones again.</p>
           </div>
           <div class="cta">Open →</div>
         </div>
-        <div class="home-card" data-go="gym" tabindex="0" role="button" aria-label="Gym Tracker">
+        <div class="home-card" data-go="gym" tabindex="0" role="button" aria-label="Gym Zone">
           <div>
-            <h3>💪 Gym Tracker</h3>
-            <p>Plan exercises, sets and track progress. (Stub included – extend later.)</p>
+            <h3>💪 Gym Zone</h3>
+            <p>Plan workouts, track sets, and pretend you enjoyed leg day.</p>
           </div>
           <div class="cta">Open →</div>
         </div>
-        <div class="home-card" data-go="recipes" tabindex="0" role="button" aria-label="Recipe Tracker">
+        <div class="home-card" data-go="recipes" tabindex="0" role="button" aria-label="Recipe Zone">
           <div>
-            <h3>🍳 Recipe Tracker</h3>
-            <p>Collect recipes & ingredients. (Stub included – extend later.)</p>
+            <h3>🍳 Recipe Zone</h3>
+            <p>Save recipes, list ingredients, and still order food anyway.</p>
           </div>
           <div class="cta">Open →</div>
         </div>
@@ -68,7 +70,7 @@
     <section id="view-movies" class="panel hidden" aria-labelledby="movies-title">
       <div class="panel-header">
         <div>
-          <div class="title" id="movies-title">🎬 Movie Tracker</div>
+          <div class="title" id="movies-title">🎬 Movie Zone</div>
           <div class="muted">Add movies to watch. Data is saved locally (and optionally to a chosen folder).</div>
         </div>
         <div class="controls">
@@ -79,11 +81,6 @@
             Folder</button>
           <button id="btn-load-folder" class="btn ghost hidden" title="Load from selected folder">⬆ Load from
             Folder</button>
-          <button id="btn-export" class="btn" title="Export JSON">⤓ Export JSON</button>
-          <label class="btn">
-            ⤒ Import JSON
-            <input id="file-import" type="file" accept="application/json" class="hidden" />
-          </label>
         </div>
       </div>
 
@@ -108,7 +105,7 @@
     <section id="view-gym" class="panel hidden" aria-labelledby="gym-title">
       <div class="panel-header">
         <div>
-          <div class="title" id="gym-title">💪 Gym Tracker</div>
+          <div class="title" id="gym-title">💪 Gym Zone</div>
           <div class="muted">Stub for now. Add exercises later.</div>
         </div>
         <div class="controls">
@@ -123,7 +120,7 @@
     <section id="view-recipes" class="panel hidden" aria-labelledby="recipes-title">
       <div class="panel-header">
         <div>
-          <div class="title" id="recipes-title">🍳 Recipe Tracker</div>
+          <div class="title" id="recipes-title">🍳 Recipe Zone</div>
           <div class="muted">Stub for now. Add recipes later.</div>
         </div>
         <div class="controls">
@@ -146,11 +143,11 @@
         <div class="row">
           <div class="col-12">
             <label for="mf-name">Movie Name *</label>
-            <input id="mf-name" class="input" placeholder="e.g., Inception" required />
+            <input id="mf-name" class="input" placeholder="e.g., Su From So" required />
           </div>
           <div class="col-6">
             <label for="mf-language">Language</label>
-            <input id="mf-language" class="input" placeholder="e.g., English" />
+            <input id="mf-language" class="input" placeholder="e.g., Kannada" />
           </div>
           <div class="col-6">
             <label for="mf-platform">Streaming Platform</label>
@@ -158,7 +155,7 @@
           </div>
           <div class="col-12">
             <label for="mf-cast">Starcast (comma-separated)</label>
-            <input id="mf-cast" class="input" placeholder="e.g., Leonardo DiCaprio, Joseph Gordon-Levitt" />
+            <input id="mf-cast" class="input" placeholder="e.g., Raj B Shetty, J.P.Thuminad" />
           </div>
           <div class="col-12">
             <div class="muted" style="font-size:12px">Tip: You can update/delete cards later. All data is stored in your

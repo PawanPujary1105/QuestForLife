@@ -1,44 +1,40 @@
-
-/***************
- * App State
- ***************/
-const APP_KEY = 'lifeTrackerData_v1';
-const DEFAULT_DATA = {
-    movies: [
-        // Sample entries to showcase the UI (you can remove them)
-        { id: crypto.randomUUID(), name: "Inception", language: "English", platform: "Netflix", cast: ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Elliot Page"], createdAt: Date.now() - 86400_000 },
-        { id: crypto.randomUUID(), name: "3 Idiots", language: "Hindi", platform: "Prime Video", cast: ["Aamir Khan", "R. Madhavan", "Sharman Joshi", "Kareena Kapoor"], createdAt: Date.now() - 43200_000 },
-    ],
+/*************
+ * LOAD DATA
+ *************/
+const QUEST_KEY = 'QuestForLife_Data';
+const DEFAULT_QFL_DATA = {
+    movies: [],
     exercises: [],
     recipes: []
 };
 
-let state = loadState();
+let questForLifeData = loadState();
 let currentView = 'home';
 let dirHandle = null; // File System Access API directory handle when selected
 const supportsFS = 'showDirectoryPicker' in window;
 
 function loadState() {
     try {
-        const raw = localStorage.getItem(APP_KEY);
-        if (!raw) {
-            localStorage.setItem(APP_KEY, JSON.stringify(DEFAULT_DATA));
-            return structuredClone(DEFAULT_DATA);
+        const storedQFLDataString = localStorage.getItem(QUEST_KEY);
+        if (!storedQFLDataString) {
+            localStorage.setItem(QUEST_KEY, JSON.stringify(DEFAULT_QFL_DATA));
+            return structuredClone(DEFAULT_QFL_DATA);
         }
-        const parsed = JSON.parse(raw);
+        const storedQFLData = JSON.parse(storedQFLDataString);
         // Basic shape sanity:
-        if (!parsed.movies) parsed.movies = [];
-        if (!parsed.exercises) parsed.exercises = [];
-        if (!parsed.recipes) parsed.recipes = [];
-        return parsed;
+        if (!storedQFLData.movies) storedQFLData.movies = [];
+        if (!storedQFLData.exercises) storedQFLData.exercises = [];
+        if (!storedQFLData.recipes) storedQFLData.recipes = [];
+        return storedQFLData;
     } catch (e) {
-        console.warn('Failed to parse state; resetting.', e);
-        localStorage.setItem(APP_KEY, JSON.stringify(DEFAULT_DATA));
-        return structuredClone(DEFAULT_DATA);
+        console.warn('Data fetch from local storage: ', e);
+        localStorage.setItem(QUEST_KEY, JSON.stringify(DEFAULT_QFL_DATA));
+        return structuredClone(DEFAULT_QFL_DATA);
     }
 }
+
 function saveState() {
-    localStorage.setItem(APP_KEY, JSON.stringify(state));
+    localStorage.setItem(QUEST_KEY, JSON.stringify(questForLifeData));
     renderMovies(); // Keep UI in sync
 }
 
@@ -94,18 +90,18 @@ const searchEl = document.getElementById('search-movie');
 const filterPlatformEl = document.getElementById('filter-platform');
 
 function renderMovies() {
-    const { movies } = state;
+    const { movies } = questForLifeData;
     // Filters
-    const q = (searchEl.value || '').toLowerCase().trim();
-    const pf = (filterPlatformEl.value || '').toLowerCase().trim();
+    const movieSearchTerm = (searchEl.value || '').toLowerCase().trim();
+    const movieFilterTerm = (filterPlatformEl.value || '').toLowerCase().trim();
 
     const filtered = movies.filter(m => {
         const hay = [
             m.name, m.language, m.platform,
             ...(Array.isArray(m.cast) ? m.cast : [])
         ].filter(Boolean).join(' ').toLowerCase();
-        const okQ = q ? hay.includes(q) : true;
-        const okP = pf ? (m.platform || '').toLowerCase() === pf : true;
+        const okQ = movieSearchTerm ? hay.includes(movieSearchTerm) : true;
+        const okP = movieFilterTerm ? (m.platform || '').toLowerCase() === movieFilterTerm : true;
         return okQ && okP;
     });
 
@@ -135,7 +131,7 @@ function renderMovies() {
     }
 
     // update platform filter options
-    const platforms = Array.from(new Set(state.movies.map(m => (m.platform || '').trim()).filter(Boolean))).sort();
+    const platforms = Array.from(new Set(questForLifeData.movies.map(m => (m.platform || '').trim()).filter(Boolean))).sort();
     const current = filterPlatformEl.value;
     filterPlatformEl.innerHTML = `<option value="">All platforms</option>` + platforms.map(p => `<option value="${escapeHTML(p)}">${escapeHTML(p)}</option>`).join('');
     filterPlatformEl.value = current; // retain selection if possible
@@ -144,18 +140,18 @@ function renderMovies() {
     movieCardsEl.querySelectorAll('[data-act="delete"]').forEach(btn => {
         btn.addEventListener('click', () => {
             const id = btn.dataset.id;
-            const m = state.movies.find(x => x.id === id);
+            const m = questForLifeData.movies.find(x => x.id === id);
             if (!m) return;
             const ok = confirm(`Delete "${m.name}"?`);
             if (!ok) return;
-            state.movies = state.movies.filter(x => x.id !== id);
+            questForLifeData.movies = questForLifeData.movies.filter(x => x.id !== id);
             saveState();
         });
     });
     movieCardsEl.querySelectorAll('[data-act="edit"]').forEach(btn => {
         btn.addEventListener('click', () => {
             const id = btn.dataset.id;
-            const m = state.movies.find(x => x.id === id);
+            const m = questForLifeData.movies.find(x => x.id === id);
             if (!m) return;
             openMovieModal(m); // prefill
         });
@@ -164,8 +160,8 @@ function renderMovies() {
 
 function initMovieFilters() {
     renderMovies();
-    searchEl.addEventListener('input', renderMovies, { once: true }); // attach only once
-    filterPlatformEl.addEventListener('change', renderMovies, { once: true });
+    searchEl.addEventListener('input', renderMovies);
+    filterPlatformEl.addEventListener('change', renderMovies);
 }
 
 // Utilities
@@ -223,15 +219,15 @@ movieForm.addEventListener('submit', (e) => {
 
     if (editingId) {
         // update
-        const idx = state.movies.findIndex(m => m.id === editingId);
+        const idx = questForLifeData.movies.findIndex(m => m.id === editingId);
         if (idx >= 0) {
-            state.movies[idx] = {
-                ...state.movies[idx],
+            questForLifeData.movies[idx] = {
+                ...questForLifeData.movies[idx],
                 name, language, platform, cast
             };
         }
     } else {
-        state.movies.push({
+        questForLifeData.movies.push({
             id: crypto.randomUUID(),
             name, language, platform, cast,
             createdAt: Date.now()
@@ -241,43 +237,6 @@ movieForm.addEventListener('submit', (e) => {
     closeMovieModal();
 });
 
-/*******************************
- * Import / Export (JSON file)
- *******************************/
-const fileImport = document.getElementById('file-import');
-document.getElementById('btn-export').addEventListener('click', () => {
-    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'life-tracker-export.json';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-});
-fileImport.addEventListener('change', async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    try {
-        const text = await file.text();
-        const data = JSON.parse(text);
-        if (!data || typeof data !== 'object') throw new Error('Invalid file.');
-        // Merge strategy: replace everything for simplicity
-        state = {
-            movies: Array.isArray(data.movies) ? data.movies : [],
-            exercises: Array.isArray(data.exercises) ? data.exercises : [],
-            recipes: Array.isArray(data.recipes) ? data.recipes : [],
-        };
-        saveState();
-        alert('Import successful.');
-    } catch (err) {
-        console.error(err);
-        alert('Failed to import. Please select a valid JSON export.');
-    } finally {
-        e.target.value = '';
-    }
-});
 
 /*****************************************
  * Optional: File System Access API path
@@ -304,7 +263,7 @@ if (supportsFS) {
         if (!dirHandle) { alert('Please select a storage folder first.'); return; }
         try {
             const fileHandle = await getOrCreateFileHandle(dirHandle, 'movie-tracker.json');
-            await writeFile(fileHandle, JSON.stringify({ movies: state.movies }, null, 2));
+            await writeFile(fileHandle, JSON.stringify({ movies: questForLifeData.movies }, null, 2));
             alert('Saved to movie-tracker.json in the selected folder.');
         } catch (err) {
             console.error(err);
@@ -320,7 +279,7 @@ if (supportsFS) {
             const text = await file.text();
             const data = JSON.parse(text);
             if (!data || !Array.isArray(data.movies)) throw new Error('Invalid movie-tracker.json');
-            state.movies = data.movies;
+            questForLifeData.movies = data.movies;
             saveState();
             alert('Loaded movies from movie-tracker.json');
         } catch (err) {

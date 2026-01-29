@@ -85,16 +85,23 @@ header {
 }
 
 .logo {
-  width: 50px;
+  width: 90px;
   height: 40px;
   border-radius: 10px;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, var(--primary), var(--accent));
+  background: var(--chip);
   box-shadow: var(--shadow);
-  color: white;
-  font-size: 18px;
+  overflow: hidden;
 }
+
+.logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
 
 .nav-tabs {
   display: flex;
@@ -149,7 +156,8 @@ main {
 .title {
   font-size: 20px;
   font-weight: 800;
-  letter-spacing: .2px
+  letter-spacing: .2px;
+  outline: none;
 }
 
 /* Home grid */
@@ -165,7 +173,6 @@ main {
   border-radius: var(--radius);
   padding: 18px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
   gap: 16px;
   background:
@@ -384,7 +391,8 @@ label {
 .card-actions {
   display: flex;
   gap: 8px;
-  margin-top: 6px
+  margin-top: 6px;
+  justify-content: flex-end;
 }
 
 /* Empty state */
