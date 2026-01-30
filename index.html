@@ -28,7 +28,18 @@
         <button class="tab" data-view="gym">Gym Zone</button>
         <button class="tab" data-view="recipes">Recipe Zone</button>
       </div>
+
+      <div class="nav-select">
+        <select id="section-select" aria-label="Select section">
+          <option value="home">Home</option>
+          <option value="movies">Movie Zone</option>
+          <option value="gym">Gym Zone</option>
+          <option value="recipes">Recipe Zone</option>
+        </select>
+      </div>
+
     </div>
+
   </header>
 
   <main>
@@ -82,19 +93,32 @@
           </label>
         </div>
       </div>
-
-      <div class="row" style="margin-bottom:12px">
-        <div class="col-6">
-          <label for="search-movie">Search</label>
-          <input id="search-movie" class="input" placeholder="Search by name, language, platform, or cast…" />
-        </div>
-        <div class="col-6">
-          <label for="filter-platform">Filter: Platform</label>
-          <select id="filter-platform" class="select">
-            <option value="">All platforms</option>
-          </select>
+      <div class="filters-surface">
+        <div class="row filters" style="margin-bottom:12px">
+          <div class="col-6">
+            <label for="search-movie">Search</label>
+            <input id="search-movie" class="input" placeholder="Search by name, language, platform, or cast…" />
+          </div>
+          <div class="col-group">
+            <div class="col-3">
+              <label for="filter-by">Filter: By</label>
+              <select id="filter-by" class="select" aria-controls="filter-value">
+                <option value="platform" selected>Platform</option>
+                <option value="language">Language</option>
+                <option value="cast">Cast</option>
+              </select>
+            </div>
+            <div class="col-3">
+              <label for="filter-value" id="filter-value-label">Filter: Value</label>
+              <select id="filter-value" class="select" disabled>
+                <option value="">All</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
+
+
 
       <div id="movie-cards" class="cards"></div>
       <div id="movie-empty" class="empty hidden">No movies yet. Click <b>＋ Add Movie</b> to get started.</div>
