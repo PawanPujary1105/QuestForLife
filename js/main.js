@@ -232,6 +232,27 @@ function renderMovies() {
             openMovieModal(m);
         });
     });
+
+    movieCount(filtered);
+}
+
+function movieCount(movies){
+    let movieCountEl = document.querySelector("#movie-count");
+    let movieCountTextEl = document.querySelector("#movie-count-text");
+    switch(movies.length){
+        case 0: 
+            movieCountEl.innerHTML = "";
+            movieCountTextEl.innerHTML = "No gems💎 yet — add your first one ✨";
+            break;
+        case 1: 
+            movieCountEl.innerHTML = movies.length + " gem💎";
+            movieCountTextEl.innerHTML = " ready to watch 🎬";
+            break;
+        default:
+            movieCountEl.innerHTML = movies.length + " gems💎";
+            movieCountTextEl.innerHTML = " ready to watch 🎬";
+            break;
+    }
 }
 
 function initMovieFilters() {

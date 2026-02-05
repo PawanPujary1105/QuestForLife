@@ -14,6 +14,9 @@
   --chip-text: #c7d2fe;
   --shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
   --radius: 14px;
+  --glint-1: rgba(0, 0, 0, 0.06);
+  --glint-2: rgba(0, 0, 0, 0.12);
+
 }
 
 @media (prefers-color-scheme: light) {
@@ -486,7 +489,8 @@ label {
 .cards {
   display: grid;
   gap: 14px;
-  grid-template-columns: repeat(12, 1fr)
+  grid-template-columns: repeat(12, 1fr);
+  margin-top: 14px;
 }
 
 .card {
@@ -613,7 +617,7 @@ dialog::backdrop {
   margin-bottom: 12px;
 }
 
-.row.filters > .col-6 {
+.row.filters>.col-6 {
   grid-column: 1 / -1;
 }
 
@@ -624,10 +628,15 @@ dialog::backdrop {
   width: 100%;
 }
 
-.row.filters > * { min-width: 0; }
+.row.filters>* {
+  min-width: 0;
+}
+
 .row.filters .col-6,
 .row.filters .col-3,
-.row.filters .col-group > * { min-width: 0; }
+.row.filters .col-group>* {
+  min-width: 0;
+}
 
 .row.filters label {
   display: block;
@@ -693,6 +702,62 @@ dialog::backdrop {
   text-overflow: ellipsis;
   overflow: hidden;
 }
+
+
+.result-pulse {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 0.95rem;
+  color: inherit;
+  position: relative;
+  overflow: hidden;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: transparent;
+  isolation: isolate;
+  width: 100%;
+  justify-content: center;    /* center text horizontally */
+  text-align: center;
+
+}
+
+.result-pulse::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 28%,
+    var(--glint-1) 38%,
+    var(--glint-2) 50%,
+    var(--glint-1) 62%,
+    transparent 72%
+  );
+  transform: translateX(-100%);
+  animation: shimmer-sweep 2.5s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+}
+
+.result-pulse > * {
+  position: relative;
+  z-index: 1;
+}
+
+.spark {
+  color: var(--accent);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+
+@keyframes shimmer-sweep {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
 
 @media (min-width: 769px) {
   .row.filters .col-group {
