@@ -5,6 +5,7 @@ const QUEST_KEY = 'QuestForLife_Data';
 const DEFAULT_QFL_DATA = {
     movies: [],
     watchedMovies: [],
+    movieLogs: [],
     exercises: [],
     recipes: []
 };
@@ -23,6 +24,7 @@ function loadState() {
         // Basic shape sanity:
         if (!storedQFLData.movies) storedQFLData.movies = [];
         if (!storedQFLData.watchedMovies) storedQFLData.watchedMovies = [];
+        if (!storedQFLData.movieLogs) storedQFLData.movieLogs = [];
         if (!storedQFLData.exercises) storedQFLData.exercises = [];
         if (!storedQFLData.recipes) storedQFLData.recipes = [];
         return storedQFLData;
@@ -99,13 +101,17 @@ if (sectionSelect) {
  * Movies Module
  *****************/
 const movieCardsEl = document.getElementById('movie-cards');
+const movieLogContainerEl = document.getElementById('movie-log-container');
 const movieEmptyEl = document.getElementById('movie-empty');
 const movieWatchedEmptyEl = document.getElementById('movie-watched-empty');
+const movieLogEmptyEl = document.getElementById('movie-log-empty');
+const movieControlEl = document.getElementById('movie-control');
 const movieFilterEl = document.getElementById('movie-filter');
 const searchEl = document.getElementById('search-movie');
 const filterByEl = document.getElementById('filter-by');
 const filterValueEl = document.getElementById('filter-value');
 const watchedCheckboxEl = document.getElementById('watched-checkbox');
+const logCheckboxEl = document.getElementById('log-checkbox');
 const filterValueLabel = document.getElementById('filter-value-label');
 
 function getFacetValues(field) {
@@ -228,6 +234,11 @@ function renderMovies() {
             questForLifeData.movies = questForLifeData.movies.filter(x => x.id !== id);
             watchedMovie.watchedAt = Date.now();
             questForLifeData.watchedMovies.push(watchedMovie);
+            const movieLog = structuredClone(watchedMovie);
+            movieLog.logType = "Watch";
+            movieLog.logTime = Date.now();
+            movieLog.moviesCount = questForLifeData.movies.length;
+            questForLifeData.movieLogs.unshift(movieLog);
             saveState();
         });
     });
@@ -240,13 +251,20 @@ function renderMovies() {
         });
     });
 
+    movieControlEl.classList.remove('hidden');
     movieWatchedEmptyEl.classList.add('hidden');
+    movieLogEmptyEl.classList.add('hidden');
     movieFilterEl.classList.remove("hidden");
+    movieCardsEl.classList.remove('hidden');
+    movieLogContainerEl.classList.add('hidden');
     movieCount(filtered);
 }
 
 function renderWatchedMovies() {
     const { watchedMovies = [] } = questForLifeData || {};
+    if(logCheckboxEl.checked){
+        logCheckboxEl.checked = false;
+    }
 
     movieCardsEl.innerHTML = '';
     if (watchedMovies.length === 0) {
@@ -286,6 +304,11 @@ function renderWatchedMovies() {
             if (!ok) return;
             questForLifeData.watchedMovies = questForLifeData.watchedMovies.filter(x => x.id !== id);
             questForLifeData.movies.push(movie);
+            const movieLog = structuredClone(movie);
+            movieLog.logType = "Unwatch";
+            movieLog.logTime = Date.now();
+            movieLog.moviesCount = questForLifeData.movies.length;
+            questForLifeData.movieLogs.unshift(movieLog);
             saveState("watched");
         });
     });
@@ -297,12 +320,21 @@ function renderWatchedMovies() {
             const ok = confirm(`Delete "${movie.name}"?`);
             if (!ok) return;
             questForLifeData.watchedMovies = questForLifeData.watchedMovies.filter(x => x.id !== id);
+            const movieLog = structuredClone(movie);
+            movieLog.logType = "Delete";
+            movieLog.logTime = Date.now();
+            movieLog.moviesCount = questForLifeData.movies.length;
+            questForLifeData.movieLogs.unshift(movieLog);
             saveState("watched");
         });
     });
 
+    movieControlEl.classList.add('hidden');
     movieEmptyEl.classList.add('hidden');
+    movieLogEmptyEl.classList.add('hidden');
     movieFilterEl.classList.add("hidden");
+    movieCardsEl.classList.remove('hidden');
+    movieLogContainerEl.classList.add('hidden');
 }
 
 function movieCount(movies) {
@@ -338,7 +370,21 @@ function initMovieFilters() {
     filterValueEl.addEventListener('change', renderMovies);
 
     watchedCheckboxEl.addEventListener("change", function () {
-        this.checked ? renderWatchedMovies() : renderMovies();
+        if(this.checked){
+            renderWatchedMovies();
+        }
+        else if(!logCheckboxEl.checked){
+            renderMovies();
+        }
+    });
+
+    logCheckboxEl.addEventListener("change", function () {
+        if(this.checked){
+            renderLogs()
+        }
+        else if(!watchedCheckboxEl.checked){
+            renderMovies();
+        }
     });
 }
 
@@ -356,7 +402,103 @@ function formatDate(ts) {
     } catch { return '—' }
 }
 
+function formatDay(ts) {
+    const d = new Date(ts);
+    return d.toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+function formatTime(ts) {
+    const d = new Date(ts);
+    return d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+}
+
 const toKey = v => (v ?? '').toString().trim().toLowerCase();
+
+// Map type to badge/icon/colors
+function typeMeta(type) {
+    switch ((type || '').toLowerCase()) {
+        case 'add': return { cls: 'add', label: 'Added', icon: '➕', bg: '#dbeafe', fg: '#1d4ed8' };
+        case 'watch': return { cls: 'watch', label: 'Watched', icon: '🎬', bg: '#d1fae5', fg: '#047857' };
+        case 'unwatch': return { cls: 'unwatch', label: 'Unwatched', icon: '↩', bg: '#fde68a', fg: '#b45309' };
+        case 'delete': return { cls: 'delete', label: 'Deleted', icon: '🗑', bg: '#fecaca', fg: '#b91c1c' };
+        default: return { cls: 'add', label: type, icon: '•', bg: '#e5e7eb', fg: '#111827' };
+    }
+}
+
+function renderLogs() {
+    const { movieLogs = [] } = questForLifeData || {};
+    if(watchedCheckboxEl.checked){
+        watchedCheckboxEl.checked = false;
+    }
+
+    movieLogContainerEl.innerHTML = '';
+
+    if (movieLogs.length === 0) {
+        movieLogEmptyEl.classList.remove('hidden');
+    } else {
+        movieLogEmptyEl.classList.add('hidden');
+
+        const groups = new Map();
+        for (const log of movieLogs) {
+            const day = formatDay(log.logTime);
+            if (!groups.has(day)) groups.set(day, []);
+            groups.get(day).push(log);
+        }
+
+        for (const [day, list] of groups.entries()) {
+            const dayEl = document.createElement('div');
+            dayEl.className = 'timeline-day';
+
+            const h = document.createElement('h3');
+            h.className = 'timeline-date';
+            h.textContent = day;
+            dayEl.appendChild(h);
+
+            for (const log of list) {
+                const time = formatTime(log.logTime);
+                const m = typeMeta(log.logType);
+                const platform = log.platform ? `on ${log.platform}` : '';
+                const moviesCount = log.moviesCount ? `${log.moviesCount}` : '';
+                const lang = log.language ? `${log.language}` : '';
+                const cast = Array.isArray(log.cast) && log.cast.length ? `${log.cast.slice(0, 2).join(', ')}${log.cast.length > 2 ? '…' : ''}` : '';
+
+                const item = document.createElement('div');
+                item.className = 'timeline-item';
+                // set CSS vars for the marker
+                item.style.setProperty('--icon', `"${m.icon}"`);
+                item.style.setProperty('--bg', m.bg);
+                item.style.setProperty('--fg', m.fg);
+
+                item.innerHTML = `
+                    <div class="timeline-title">
+                        <span class="badge ${m.cls}" aria-label="${m.label}">
+                        ${m.icon} ${m.label}
+                        </span>
+                        <span class="movie-name">${log.name}</span>
+                        <span class="meta">at ${time}</span>
+                    </div>
+                    <div class="timeline-details">
+                        ${platform ? `<span>${platform}</span>` : ''}
+                        ${lang ? `<span class="sep">${lang}</span>` : ''}
+                        ${cast ? `<span class="sep">Cast: ${cast}</span>` : ''}
+                        ${moviesCount ? `<span class="sep">To‑Watch: <b>${log.moviesCount}</b></span>` : ''}
+                    </div>
+                    `;
+
+                dayEl.appendChild(item);
+            }
+
+            movieLogContainerEl.appendChild(dayEl);
+        }
+    }
+
+    movieControlEl.classList.add('hidden');
+    movieEmptyEl.classList.add('hidden');
+    movieWatchedEmptyEl.classList.add('hidden');
+    movieFilterEl.classList.add("hidden");
+    movieCardsEl.classList.add('hidden');
+    movieLogContainerEl.classList.remove('hidden');
+}
 
 /*****************
  * Add/Edit Movie
@@ -413,6 +555,12 @@ movieForm.addEventListener('submit', (e) => {
             createdAt: Date.now()
         });
     }
+    const movieLog = structuredClone(questForLifeData.movies[questForLifeData.movies.length - 1]);
+    movieLog.logType = "Add";
+    movieLog.logTime = Date.now();
+    movieLog.moviesCount = questForLifeData.movies.length;
+    questForLifeData.movieLogs.unshift(movieLog);
+
     saveState();
     closeMovieModal();
 });
@@ -443,6 +591,8 @@ btnLoadFolder.addEventListener('change', async (e) => {
         // Merge strategy: replace everything for simplicity
         questForLifeData = {
             movies: Array.isArray(data.movies) ? data.movies : [],
+            watchedMovies: Array.isArray(data.watchedMovies) ? data.watchedMovies : [],
+            movieLogs: Array.isArray(data.movieLogs) ? data.movieLogs : [],
             exercises: Array.isArray(data.exercises) ? data.exercises : [],
             recipes: Array.isArray(data.recipes) ? data.recipes : [],
         };

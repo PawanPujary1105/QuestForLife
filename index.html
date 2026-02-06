@@ -82,9 +82,9 @@
       <div class="panel-header">
         <div>
           <div class="title" id="movies-title">🎬 Movie Zone</div>
-          <div class="muted">Add movies to watch. Data is saved locally (and optionally to a chosen folder).</div>
+          <div class="muted">Add movies to watch. Commitment optional. 🍿</div>
         </div>
-        <div class="controls">
+        <div class="controls" id="movie-control">
           <button id="btn-add-movie" class="btn primary" title="Add a new movie">＋ Add Movie</button>
           <button id="btn-export" class="btn success" title="Export JSON">⤓ Save Movies</button>
           <label class="btn accent">
@@ -94,6 +94,10 @@
         </div>
       </div>
       <div class="tab-control-right-aligned">
+        <label class="log-toggle" title="Toggle log view">
+          <input id="log-checkbox" type="checkbox" class="hidden" aria-checked="false" />
+          <span id="log-chip" class="chip" aria-live="polite">Movie Log</span>
+        </label>
         <label class="watched-toggle" title="Toggle watched view">
           <input id="watched-checkbox" type="checkbox" class="hidden" aria-checked="false" />
           <span id="watched-chip" class="chip" aria-live="polite">Watched</span>
@@ -130,11 +134,12 @@
         </div>
       </div>
 
-
-
       <div id="movie-cards" class="cards"></div>
+      <div id="movie-log-container" class="movie-logs hidden"></div>
+
       <div id="movie-empty" class="empty hidden">No movies yet. Click <b>＋ Add Movie</b> to get started.</div>
       <div id="movie-watched-empty" class="empty hidden">Nothing watched so far. The popcorn is disappointed 🍿</div>
+      <div id="movie-log-empty" class="empty hidden">No activity yet. Go make some movie history 🍿</div>
     </section>
 
     <!-- GYM (stub) -->
