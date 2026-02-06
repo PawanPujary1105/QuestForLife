@@ -93,7 +93,13 @@
           </label>
         </div>
       </div>
-      <div class="filters-surface">
+      <div class="tab-control-right-aligned">
+        <label class="watched-toggle" title="Toggle watched view">
+          <input id="watched-checkbox" type="checkbox" class="hidden" aria-checked="false" />
+          <span id="watched-chip" class="chip" aria-live="polite">Watched</span>
+        </label>
+      </div>
+      <div id="movie-filter" class="filters-surface">
         <div class="row filters" style="margin-bottom:12px">
           <div class="col-6">
             <label for="search-movie">Search</label>
@@ -128,6 +134,7 @@
 
       <div id="movie-cards" class="cards"></div>
       <div id="movie-empty" class="empty hidden">No movies yet. Click <b>＋ Add Movie</b> to get started.</div>
+      <div id="movie-watched-empty" class="empty hidden">Nothing watched so far. The popcorn is disappointed 🍿</div>
     </section>
 
     <!-- GYM (stub) -->

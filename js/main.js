@@ -4,6 +4,7 @@
 const QUEST_KEY = 'QuestForLife_Data';
 const DEFAULT_QFL_DATA = {
     movies: [],
+    watchedMovies: [],
     exercises: [],
     recipes: []
 };
@@ -21,6 +22,7 @@ function loadState() {
         const storedQFLData = JSON.parse(storedQFLDataString);
         // Basic shape sanity:
         if (!storedQFLData.movies) storedQFLData.movies = [];
+        if (!storedQFLData.watchedMovies) storedQFLData.watchedMovies = [];
         if (!storedQFLData.exercises) storedQFLData.exercises = [];
         if (!storedQFLData.recipes) storedQFLData.recipes = [];
         return storedQFLData;
@@ -31,9 +33,9 @@ function loadState() {
     }
 }
 
-function saveState() {
+function saveState(tab = "unwatched") {
     localStorage.setItem(QUEST_KEY, JSON.stringify(questForLifeData));
-    renderMovies(); // Keep UI in sync
+    tab === "unwatched" ? renderMovies() : renderWatchedMovies(); // Keep UI in sync
 }
 
 /***************
@@ -98,9 +100,12 @@ if (sectionSelect) {
  *****************/
 const movieCardsEl = document.getElementById('movie-cards');
 const movieEmptyEl = document.getElementById('movie-empty');
+const movieWatchedEmptyEl = document.getElementById('movie-watched-empty');
+const movieFilterEl = document.getElementById('movie-filter');
 const searchEl = document.getElementById('search-movie');
 const filterByEl = document.getElementById('filter-by');
 const filterValueEl = document.getElementById('filter-value');
+const watchedCheckboxEl = document.getElementById('watched-checkbox');
 const filterValueLabel = document.getElementById('filter-value-label');
 
 function getFacetValues(field) {
@@ -155,6 +160,7 @@ function renderMovies() {
     const field = filterByEl.value;
     const value = filterValueEl.value;
 
+
     const filtered = movies.filter(m => {
         const hay = [
             m.name, m.language, m.platform,
@@ -198,8 +204,8 @@ function renderMovies() {
                 <div class="muted" style="font-size:12px">Added on ${formatDate(m.createdAt)}</div>
                 <div>${castChips || '<span class="muted">No cast listed</span>'}</div>
                 <div class="card-actions">
-                <button class="btn" data-act="edit" data-id="${m.id}">✎ Edit</button>
-                <button class="btn danger" data-act="delete" data-id="${m.id}">🗑 Delete</button>
+                <button class="btn" data-act="movie-edit" data-id="${m.id}">✎ Edit</button>
+                <button class="btn success" data-act="movie-mark-watched" data-id="${m.id}" title="Mark as watched">▶️ Watched</button>
                 </div>
             `;
             movieCardsEl.appendChild(card);
@@ -212,19 +218,20 @@ function renderMovies() {
         filterValueEl.value = before;
     }
 
-    movieCardsEl.querySelectorAll('[data-act="delete"]').forEach(btn => {
+    movieCardsEl.querySelectorAll('[data-act="movie-mark-watched"]').forEach(btn => {
         btn.addEventListener('click', () => {
             const id = btn.dataset.id;
-            const m = questForLifeData.movies.find(x => x.id === id);
-            if (!m) return;
-            const ok = confirm(`Delete "${m.name}"?`);
+            const watchedMovie = questForLifeData.movies.find(x => x.id === id);
+            if (!watchedMovie) return;
+            const ok = confirm(`Mark "${watchedMovie.name}" as watched?`);
             if (!ok) return;
             questForLifeData.movies = questForLifeData.movies.filter(x => x.id !== id);
+            watchedMovie.watchedAt = Date.now();
+            questForLifeData.watchedMovies.push(watchedMovie);
             saveState();
-            renderMovies();
         });
     });
-    movieCardsEl.querySelectorAll('[data-act="edit"]').forEach(btn => {
+    movieCardsEl.querySelectorAll('[data-act="movie-edit"]').forEach(btn => {
         btn.addEventListener('click', () => {
             const id = btn.dataset.id;
             const m = questForLifeData.movies.find(x => x.id === id);
@@ -233,18 +240,80 @@ function renderMovies() {
         });
     });
 
+    movieWatchedEmptyEl.classList.add('hidden');
+    movieFilterEl.classList.remove("hidden");
     movieCount(filtered);
 }
 
-function movieCount(movies){
+function renderWatchedMovies() {
+    const { watchedMovies = [] } = questForLifeData || {};
+
+    movieCardsEl.innerHTML = '';
+    if (watchedMovies.length === 0) {
+        movieWatchedEmptyEl.classList.remove('hidden');
+    } else {
+        movieWatchedEmptyEl.classList.add('hidden');
+        for (const m of watchedMovies.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            const castChips = (m.cast || [])
+                .map(c => `<span class="chip" title="Cast">${escapeHTML(c)}</span>`)
+                .join('');
+            card.innerHTML = `
+                <div style="display:flex; align-items:center; gap:10px; justify-content:space-between">
+                <h4>${escapeHTML(m.name || 'Untitled')}</h4>
+                <span class="badge" title="Platform">
+                    ${m.platform ? escapeHTML(m.platform) : '—'} · ${m.language ? escapeHTML(m.language) : '—'}
+                </span>
+                </div>
+                <div class="muted" style="font-size:12px">Watched on ${formatDate(m.watchedAt)}</div>
+                <div>${castChips || '<span class="muted">No cast listed</span>'}</div>
+                <div class="card-actions">
+                <button class="btn accent" data-act="movie-mark-unwatched" data-id="${m.id}" title="Move back to To Watch" aria-label="Move ${m.name} back to To Watch">🔁 Unwatch</button>
+                <button class="btn danger" data-act="movie-delete" data-id="${m.id}" title="Delete permanently" aria-label="Delete ${m.name}">🗑️ Delete</button>
+                </div>
+            `;
+            movieCardsEl.appendChild(card);
+        }
+    }
+
+    movieCardsEl.querySelectorAll('[data-act="movie-mark-unwatched"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.dataset.id;
+            const movie = questForLifeData.watchedMovies.find(x => x.id === id);
+            if (!movie) return;
+            const ok = confirm(`You blinked the whole time, didn't you. Add "${movie.name}" back to watchlist?`);
+            if (!ok) return;
+            questForLifeData.watchedMovies = questForLifeData.watchedMovies.filter(x => x.id !== id);
+            questForLifeData.movies.push(movie);
+            saveState("watched");
+        });
+    });
+    movieCardsEl.querySelectorAll('[data-act="movie-delete"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.dataset.id;
+            const movie = questForLifeData.watchedMovies.find(x => x.id === id);
+            if (!movie) return;
+            const ok = confirm(`Delete "${movie.name}"?`);
+            if (!ok) return;
+            questForLifeData.watchedMovies = questForLifeData.watchedMovies.filter(x => x.id !== id);
+            saveState("watched");
+        });
+    });
+
+    movieEmptyEl.classList.add('hidden');
+    movieFilterEl.classList.add("hidden");
+}
+
+function movieCount(movies) {
     let movieCountEl = document.querySelector("#movie-count");
     let movieCountTextEl = document.querySelector("#movie-count-text");
-    switch(movies.length){
-        case 0: 
+    switch (movies.length) {
+        case 0:
             movieCountEl.innerHTML = "";
             movieCountTextEl.innerHTML = "No gems💎 yet — add your first one ✨";
             break;
-        case 1: 
+        case 1:
             movieCountEl.innerHTML = movies.length + " gem💎";
             movieCountTextEl.innerHTML = " ready to watch 🎬";
             break;
@@ -267,6 +336,10 @@ function initMovieFilters() {
     });
 
     filterValueEl.addEventListener('change', renderMovies);
+
+    watchedCheckboxEl.addEventListener("change", function () {
+        this.checked ? renderWatchedMovies() : renderMovies();
+    });
 }
 
 // Utilities

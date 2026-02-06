@@ -7,6 +7,7 @@
   --primary: #4f46e5;
   --primary-2: #6366f1;
   --accent: #14b8a6;
+  --accent-fg: #0b5cff;
   --danger: #ef4444;
   --success: #22c55e;
   --border: #1f2937;
@@ -31,7 +32,7 @@
     --primary-2: #6366f1;
     --accent: #06b6d4;
     --danger: #dc2626;
-    --success: #16a34a;
+    --success: #22c55e;
     --border: #e5e7eb;
     --chip: #eef2ff;
     --chip-text: #3730a3;
@@ -410,7 +411,7 @@ main {
 }
 
 .btn.success {
-  background: linear-gradient(135deg, var(--success), #34d399);
+  background: linear-gradient(135deg, var(--success));
   border-color: transparent
 }
 
@@ -538,13 +539,27 @@ label {
 
 .chip {
   display: inline-block;
-  padding: 6px 10px;
+  padding: 6px 20px;
   border-radius: 999px;
   background: var(--chip);
-  color: var(--text);
+  color: var(--muted);
   margin: 4px 6px 0 0;
   font-size: 12px;
   border: 1px solid var(--border)
+}
+
+.tab-control-right-aligned{
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  margin: 14px;
+}
+
+#watched-checkbox:checked + .chip {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(11,92,255,0.12);
 }
 
 .card-actions {
