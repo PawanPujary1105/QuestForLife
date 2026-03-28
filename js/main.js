@@ -271,7 +271,7 @@ function renderWatchedMovies() {
         movieWatchedEmptyEl.classList.remove('hidden');
     } else {
         movieWatchedEmptyEl.classList.add('hidden');
-        for (const m of watchedMovies.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))) {
+        for (const m of watchedMovies.sort((a, b) => (b.watchedAt || 0) - (a.watchedAt || 0))) {
             const card = document.createElement('div');
             card.className = 'card';
             const castChips = (m.cast || [])
@@ -380,7 +380,7 @@ function initMovieFilters() {
 
     logCheckboxEl.addEventListener("change", function () {
         if(this.checked){
-            renderLogs()
+            renderLogs();
         }
         else if(!watchedCheckboxEl.checked){
             renderMovies();
