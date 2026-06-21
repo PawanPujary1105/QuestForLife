@@ -372,6 +372,7 @@ function updateReleasePulse() {
 
     questForLifeData.releasePulse = Date.now();
     saveState();
+    renderReleasePulse();
 }
 
 function initMovieFilters() {
