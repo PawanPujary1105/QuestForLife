@@ -1,215 +1,227 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Quest 4 Life</title>
-  <meta name="theme-color" content="#0f172a" />
-  <link rel="stylesheet" href="css/main.css">
-  <script src="js/main.js" defer></script>
-</head>
-
-<body>
-  <header>
-    <div class="nav">
-      <div class="brand">
-        <div class="logo">
-          <img src="images/Quest4Life_Logo.png" alt="Quest 4 Life logo" />
-        </div>
-        <div>
-          <div>Quest 4 Life</div>
-          <div class="muted" style="font-size:12px">Movies • Gym • Recipes</div>
-        </div>
-      </div>
-      <div class="nav-tabs" role="tablist" aria-label="Sections">
-        <button class="tab active" data-view="home" aria-selected="true">Home</button>
-        <button class="tab" data-view="movies">Movie Zone</button>
-        <button class="tab" data-view="gym">Gym Zone</button>
-        <button class="tab" data-view="recipes">Recipe Zone</button>
-      </div>
-
-      <div class="nav-select">
-        <select id="section-select" aria-label="Select section">
-          <option value="home">Home</option>
-          <option value="movies">Movie Zone</option>
-          <option value="gym">Gym Zone</option>
-          <option value="recipes">Recipe Zone</option>
-        </select>
-      </div>
-
-    </div>
-
-  </header>
-
-  <main>
-    <!-- HOME -->
-    <section id="view-home" class="panel" aria-labelledby="home-title">
-      <div class="panel-header">
-        <div>
-          <div class="title" id="home-title">Welcome to Quest for Life!</div>
-          <div class="muted">Side quests strongly recommended. Main quest is… complicated.</div>
-        </div>
-      </div>
-
-      <div class="home-grid">
-        <div class="home-card" data-go="movies" tabindex="0" role="button" aria-label="Movie Zone">
-          <div>
-            <h3>🎬 Movie Zone</h3>
-            <p>Track movies you want to watch — so you stop rewatching the same ones again.</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Quest 4 Life</title>
+    <meta name="theme-color" content="#0f172a" />
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="js/main.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <div class="nav">
+        <div class="brand">
+          <div class="logo">
+            <img src="images/Quest4Life_Logo.png" alt="Quest 4 Life logo" />
           </div>
-          <div class="cta">Open →</div>
-        </div>
-        <div class="home-card" data-go="gym" tabindex="0" role="button" aria-label="Gym Zone">
           <div>
-            <h3>💪 Gym Zone</h3>
-            <p>Plan workouts, track sets, and pretend you enjoyed leg day.</p>
+            <div>Quest 4 Life</div>
+            <div class="muted" style="font-size:12px">Movies • Gym • Recipes</div>
           </div>
-          <div class="cta">Open →</div>
         </div>
-        <div class="home-card" data-go="recipes" tabindex="0" role="button" aria-label="Recipe Zone">
-          <div>
-            <h3>🍳 Recipe Zone</h3>
-            <p>Save recipes, list ingredients, and still order food anyway.</p>
-          </div>
-          <div class="cta">Open →</div>
+        <div class="nav-tabs" role="tablist" aria-label="Sections">
+          <button class="tab active" data-view="home" aria-selected="true">Home</button>
+          <button class="tab" data-view="movies">Movie Zone</button>
+          <button class="tab" data-view="gym">Gym Zone</button>
+          <button class="tab" data-view="recipes">Recipe Zone</button>
         </div>
-      </div>
-    </section>
 
-    <!-- MOVIES -->
-    <section id="view-movies" class="panel hidden" aria-labelledby="movies-title">
-      <div class="panel-header">
-        <div>
-          <div class="title" id="movies-title">🎬 Movie Zone</div>
-          <div class="muted">Add movies to watch. Commitment optional. 🍿</div>
+        <div class="nav-select">
+          <select id="section-select" aria-label="Select section">
+            <option value="home">Home</option>
+            <option value="movies">Movie Zone</option>
+            <option value="gym">Gym Zone</option>
+            <option value="recipes">Recipe Zone</option>
+          </select>
         </div>
-        <div class="controls" id="movie-control">
-          <button id="btn-add-movie" class="btn primary" title="Add a new movie">＋ Add Movie</button>
-          <button id="btn-export" class="btn success" title="Export JSON">⤓ Save Movies</button>
-          <label class="btn accent">
-            ⤒ Load Movies
-            <input id="btn-import" type="file" accept="application/json" class="hidden" />
+
+      </div>
+
+    </header>
+
+    <main>
+      <!-- HOME -->
+      <section id="view-home" class="panel" aria-labelledby="home-title">
+        <div class="panel-header">
+          <div>
+            <div class="title" id="home-title">Welcome to Quest for Life!</div>
+            <div class="muted">Side quests strongly recommended. Main quest is… complicated.</div>
+          </div>
+        </div>
+
+        <div class="home-grid">
+          <div class="home-card" data-go="movies" tabindex="0" role="button" aria-label="Movie Zone">
+            <div>
+              <h3>🎬 Movie Zone</h3>
+              <p>Track movies you want to watch — so you stop rewatching the same ones again.</p>
+            </div>
+            <div class="cta">Open →</div>
+          </div>
+          <div class="home-card" data-go="gym" tabindex="0" role="button" aria-label="Gym Zone">
+            <div>
+              <h3>💪 Gym Zone</h3>
+              <p>Plan workouts, track sets, and pretend you enjoyed leg day.</p>
+            </div>
+            <div class="cta">Open →</div>
+          </div>
+          <div class="home-card" data-go="recipes" tabindex="0" role="button" aria-label="Recipe Zone">
+            <div>
+              <h3>🍳 Recipe Zone</h3>
+              <p>Save recipes, list ingredients, and still order food anyway.</p>
+            </div>
+            <div class="cta">Open →</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MOVIES -->
+      <section id="view-movies" class="panel hidden" aria-labelledby="movies-title">
+        <div class="panel-header">
+          <div>
+            <div class="title" id="movies-title">🎬 Movie Zone</div>
+            <div class="muted">Add movies to watch. Commitment optional. 🍿</div>
+          </div>
+          <div class="controls" id="movie-control">
+            <button id="btn-add-movie" class="btn btn-primary" title="Add a new movie">＋ Add Movie</button>
+            <button id="btn-export" class="btn btn-success" title="Export JSON">⤓ Save Movies</button>
+            <label class="btn btn-secondary">
+              ⤒ Load Movies
+              <input id="btn-import" type="file" accept="application/json" class="hidden" />
+            </label>
+            <button id="btn-release-pulse" class="btn btn-secondary" title="Update release pulse">↻ Release Pulse</button>
+          </div>
+        </div>
+        <div class="tab-control-right-aligned">
+          <label class="log-toggle" title="Toggle log view">
+            <input id="log-checkbox" type="checkbox" class="hidden" aria-checked="false" />
+            <span id="log-chip" class="chip" aria-live="polite">Movie Log</span>
+          </label>
+          <label class="watched-toggle" title="Toggle watched view">
+            <input id="watched-checkbox" type="checkbox" class="hidden" aria-checked="false" />
+            <span id="watched-chip" class="chip" aria-live="polite">Watched</span>
           </label>
         </div>
-      </div>
-      <div class="tab-control-right-aligned">
-        <label class="log-toggle" title="Toggle log view">
-          <input id="log-checkbox" type="checkbox" class="hidden" aria-checked="false" />
-          <span id="log-chip" class="chip" aria-live="polite">Movie Log</span>
-        </label>
-        <label class="watched-toggle" title="Toggle watched view">
-          <input id="watched-checkbox" type="checkbox" class="hidden" aria-checked="false" />
-          <span id="watched-chip" class="chip" aria-live="polite">Watched</span>
-        </label>
-      </div>
-      <div id="movie-filter" class="filters-surface">
-        <div class="row filters" style="margin-bottom:12px">
-          <div class="col-6">
-            <label for="search-movie">Search</label>
-            <input id="search-movie" class="input" placeholder="Search by name, language, platform, or cast…" />
-          </div>
-          <div class="col-group">
-            <div class="col-3">
-              <label for="filter-by">Filter: By</label>
-              <select id="filter-by" class="select" aria-controls="filter-value">
-                <option value="platform" selected>Platform</option>
-                <option value="language">Language</option>
-                <option value="cast">Cast</option>
-              </select>
+        <div id="movie-filter" class="filters-surface">
+          <div class="row filters row-filter">
+            <div class="col-md-12">
+              <label for="search-movie">Search</label>
+              <input id="search-movie" class="input" placeholder="Search by name, language, platform, or cast…" />
             </div>
-            <div class="col-3">
-              <label for="filter-value" id="filter-value-label">Filter: Value</label>
-              <select id="filter-value" class="select" disabled>
-                <option value="">All</option>
-              </select>
+            
+          </div>
+          <div class="row row-filter">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-md-6 col-filter">
+                  <label for="filter-by">Filter: By</label>
+                  <select id="filter-by" class="select" aria-controls="filter-value">
+                    <option value="platform" selected>Platform</option>
+                    <option value="language">Language</option>
+                    <option value="cast">Cast</option>
+                  </select>
+                </div>
+                <div class="col-md-6 col-filter">
+                  <label for="filter-value" id="filter-value-label">Filter: Value</label>
+                  <select id="filter-value" class="select" disabled>
+                    <option value="">All</option>
+                  </select>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="col-6">
-            <div class="result-pulse" aria-live="polite" aria-atomic="true">
-              <span id="movie-count" class="spark" aria-label="Movies found">0 gems💎</span>
-              <span id="movie-count-text" class="result-pulse-text"> ready to watch 🎬</span>
+          <div class="row row-filter">
+            <div class="col-12 col-md-3 col-filter">
+              <span id="release-pulse" class="chip w-100">
+                Release Pulse: <strong>19 Jun 2026</strong>
+              </span>
+            </div>
+            <div class="col-12 col-md-9 col-filter">
+              <div class="result-pulse" aria-live="polite" aria-atomic="true">
+                <span id="movie-count" class="spark" aria-label="Movies found">0 gems💎</span>
+                <span id="movie-count-text" class="result-pulse-text"> ready to watch 🎬</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div id="movie-cards" class="cards"></div>
-      <div id="movie-log-container" class="movie-logs hidden"></div>
+        <div id="movie-cards" class="cards"></div>
+        <div id="movie-log-container" class="movie-logs hidden"></div>
 
-      <div id="movie-empty" class="empty hidden">No movies yet. Click <b>＋ Add Movie</b> to get started.</div>
-      <div id="movie-watched-empty" class="empty hidden">Nothing watched so far. The popcorn is disappointed 🍿</div>
-      <div id="movie-log-empty" class="empty hidden">No activity yet. Go make some movie history 🍿</div>
-    </section>
+        <div id="movie-empty" class="empty hidden">No movies yet. Click <b>＋ Add Movie</b> to get started.</div>
+        <div id="movie-watched-empty" class="empty hidden">Nothing watched so far. The popcorn is disappointed 🍿</div>
+        <div id="movie-log-empty" class="empty hidden">No activity yet. Go make some movie history 🍿</div>
+      </section>
 
-    <!-- GYM (stub) -->
-    <section id="view-gym" class="panel hidden" aria-labelledby="gym-title">
-      <div class="panel-header">
-        <div>
-          <div class="title" id="gym-title">💪 Gym Zone</div>
-          <div class="muted">Stub for now. Add exercises later.</div>
-        </div>
-        <div class="controls">
-          <button class="btn primary" id="btn-add-exercise">＋ Add Exercise</button>
-        </div>
-      </div>
-
-      <div id="gym-list" class="empty">No exercises added yet. (You can extend this section later.)</div>
-    </section>
-
-    <!-- RECIPES (stub) -->
-    <section id="view-recipes" class="panel hidden" aria-labelledby="recipes-title">
-      <div class="panel-header">
-        <div>
-          <div class="title" id="recipes-title">🍳 Recipe Zone</div>
-          <div class="muted">Stub for now. Add recipes later.</div>
-        </div>
-        <div class="controls">
-          <button class="btn primary" id="btn-add-recipe">＋ Add Recipe</button>
-        </div>
-      </div>
-
-      <div id="recipe-list" class="empty">No recipes added yet. (You can extend this section later.)</div>
-    </section>
-  </main>
-
-  <!-- Add Movie Modal -->
-  <dialog id="modal-movie">
-    <form method="dialog" id="movie-form">
-      <div class="modal-header">
-        <div class="title">Add Movie</div>
-        <button type="button" class="btn ghost" id="movie-close" aria-label="Close">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-12">
-            <label for="mf-name">Movie Name *</label>
-            <input id="mf-name" class="input" placeholder="e.g., Su From So" required />
+      <!-- GYM (stub) -->
+      <section id="view-gym" class="panel hidden" aria-labelledby="gym-title">
+        <div class="panel-header">
+          <div>
+            <div class="title" id="gym-title">💪 Gym Zone</div>
+            <div class="muted">Stub for now. Add exercises later.</div>
           </div>
-          <div class="col-6">
-            <label for="mf-language">Language</label>
-            <input id="mf-language" class="input" placeholder="e.g., Kannada" />
-          </div>
-          <div class="col-6">
-            <label for="mf-platform">Streaming Platform</label>
-            <input id="mf-platform" class="input" placeholder="e.g., Netflix, Prime Video" />
-          </div>
-          <div class="col-12">
-            <label for="mf-cast">Starcast (comma-separated)</label>
-            <input id="mf-cast" class="input" placeholder="e.g., Raj B Shetty, J.P.Thuminad" />
-          </div>
-          <div class="col-12">
-            <div class="muted" style="font-size:12px">Tip: You can update/delete cards later. All data is stored in your
-              browser storage. Optional: save to a folder as JSON.</div>
+          <div class="controls">
+            <button class="btn primary" id="btn-add-exercise">＋ Add Exercise</button>
           </div>
         </div>
-      </div>
-      <div class="modal-actions">
-        <button type="button" class="btn" id="movie-cancel">Cancel</button>
-        <button type="submit" class="btn primary">Save Movie</button>
-      </div>
-    </form>
-  </dialog>
-</body>
 
+        <div id="gym-list" class="empty">No exercises added yet. (You can extend this section later.)</div>
+      </section>
+
+      <!-- RECIPES (stub) -->
+      <section id="view-recipes" class="panel hidden" aria-labelledby="recipes-title">
+        <div class="panel-header">
+          <div>
+            <div class="title" id="recipes-title">🍳 Recipe Zone</div>
+            <div class="muted">Stub for now. Add recipes later.</div>
+          </div>
+          <div class="controls">
+            <button class="btn primary" id="btn-add-recipe">＋ Add Recipe</button>
+          </div>
+        </div>
+
+        <div id="recipe-list" class="empty">No recipes added yet. (You can extend this section later.)</div>
+      </section>
+    </main>
+
+    <!-- Add Movie Modal -->
+    <dialog id="modal-movie">
+      <form method="dialog" id="movie-form">
+        <div class="modal-header">
+          <div class="title">Add Movie</div>
+          <button type="button" class="btn ghost" id="movie-close" aria-label="Close">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12">
+              <label for="mf-name">Movie Name *</label>
+              <input id="mf-name" class="input" placeholder="e.g., Su From So" required />
+            </div>
+            <div class="col-6">
+              <label for="mf-language">Language</label>
+              <input id="mf-language" class="input" placeholder="e.g., Kannada" />
+            </div>
+            <div class="col-6">
+              <label for="mf-platform">Streaming Platform</label>
+              <input id="mf-platform" class="input" placeholder="e.g., Netflix, Prime Video" />
+            </div>
+            <div class="col-12">
+              <label for="mf-cast">Starcast (comma-separated)</label>
+              <input id="mf-cast" class="input" placeholder="e.g., Raj B Shetty, J.P.Thuminad" />
+            </div>
+            <div class="col-12">
+              <div class="muted" style="font-size:12px">Tip: You can update/delete cards later. All data is stored in your
+                browser storage. Optional: save to a folder as JSON.</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn" id="movie-cancel">Cancel</button>
+          <button type="submit" class="btn primary">Save Movie</button>
+        </div>
+      </form>
+    </dialog>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>

@@ -7,7 +7,8 @@ const DEFAULT_QFL_DATA = {
     watchedMovies: [],
     movieLogs: [],
     exercises: [],
-    recipes: []
+    recipes: [],
+    releasePulse: null
 };
 
 let questForLifeData = loadState();
@@ -258,6 +259,7 @@ function renderMovies() {
     movieCardsEl.classList.remove('hidden');
     movieLogContainerEl.classList.add('hidden');
     movieCount(filtered);
+    renderReleasePulse();
 }
 
 function renderWatchedMovies() {
@@ -356,6 +358,22 @@ function movieCount(movies) {
     }
 }
 
+function renderReleasePulse() {
+    const el = document.getElementById('release-pulse');
+    if (!el) return;
+
+    const date = formatDate(questForLifeData.releasePulse);
+    el.innerHTML = `Release Pulse: <strong>${date}</strong>`;
+}
+
+function updateReleasePulse() {
+    const ok = confirm("Update Release Pulse?");
+    if (!ok) return;
+
+    questForLifeData.releasePulse = Date.now();
+    saveState();
+}
+
 function initMovieFilters() {
     populateFilterValueOptions(); // start disabled
     renderMovies();
@@ -394,6 +412,7 @@ function escapeHTML(str) {
         '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
     }[s]));
 }
+
 function formatDate(ts) {
     if (!ts) return '—';
     try {
@@ -525,9 +544,11 @@ function openMovieModal(movie = null) {
     mfCast.value = (movie?.cast || []).join(', ');
     if (typeof modal.showModal === 'function') { modal.showModal(); } else { alert('Modal not supported in this browser.'); }
 }
+
 function closeMovieModal() {
     if (modal.open) modal.close();
 }
+
 movieClose.addEventListener('click', closeMovieModal);
 movieCancel.addEventListener('click', closeMovieModal);
 
@@ -564,6 +585,8 @@ movieForm.addEventListener('submit', (e) => {
     saveState();
     closeMovieModal();
 });
+
+document.getElementById('btn-release-pulse').addEventListener('click', () => updateReleasePulse());
 
 /*******************************
  * Import / Export (JSON file)
