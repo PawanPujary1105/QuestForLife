@@ -111,8 +111,9 @@ const movieFilterEl = document.getElementById('movie-filter');
 const searchEl = document.getElementById('search-movie');
 const filterByEl = document.getElementById('filter-by');
 const filterValueEl = document.getElementById('filter-value');
-const watchedCheckboxEl = document.getElementById('watched-checkbox');
-const logCheckboxEl = document.getElementById('log-checkbox');
+const moviesViewEl = document.getElementById('movies-view');
+const watchedCheckboxEl = document.getElementById('watched-view');
+const logCheckboxEl = document.getElementById('log-view');
 const filterValueLabel = document.getElementById('filter-value-label');
 
 function getFacetValues(field) {
@@ -197,22 +198,26 @@ function renderMovies() {
         movieEmptyEl.classList.add('hidden');
         for (const m of filtered.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))) {
             const card = document.createElement('div');
-            card.className = 'card';
+            card.className = 'col-12 col-md-6 col-lg-4';
             const castChips = (m.cast || [])
-                .map(c => `<span class="chip" title="Cast">${escapeHTML(c)}</span>`)
+                .map(c => `<span class="badge rounded-pill text-bg-info me-1">${escapeHTML(c)}</span>`)
                 .join('');
             card.innerHTML = `
-                <div style="display:flex; align-items:center; gap:10px; justify-content:space-between">
-                <h4>${escapeHTML(m.name || 'Untitled')}</h4>
-                <span class="badge" title="Platform">
-                    ${m.platform ? escapeHTML(m.platform) : '—'} · ${m.language ? escapeHTML(m.language) : '—'}
-                </span>
-                </div>
-                <div class="muted" style="font-size:12px">Added on ${formatDate(m.createdAt)}</div>
-                <div>${castChips || '<span class="muted">No cast listed</span>'}</div>
-                <div class="card-actions">
-                <button class="btn" data-act="movie-edit" data-id="${m.id}">✎ Edit</button>
-                <button class="btn success" data-act="movie-mark-watched" data-id="${m.id}" title="Mark as watched">▶️ Watched</button>
+                <div class="card shadow-sm h-100">
+                    <div class="card-body d-flex flex-column gap-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">${escapeHTML(m.name || 'Untitled')}</h5>
+                            <span class="badge rounded-pill text-bg-dark">
+                                ${m.platform ? escapeHTML(m.platform) : '—'} · ${m.language ? escapeHTML(m.language) : '—'}
+                            </span>
+                        </div>
+                        <div class="text-muted small">Added on ${formatDate(m.createdAt)}</div>
+                        <div>${castChips || '<span class="muted">No cast listed</span>'}</div>
+                        <div class="mt-auto d-flex justify-content-end gap-2">
+                            <button class="btn btn-secondary" data-act="movie-edit" data-id="${m.id}">✎ Edit</button>
+                            <button class="btn btn-success" data-act="movie-mark-watched" data-id="${m.id}" title="Mark as watched">✓ Watched</button>
+                        </div>
+                    </div>
                 </div>
             `;
             movieCardsEl.appendChild(card);
@@ -264,9 +269,6 @@ function renderMovies() {
 
 function renderWatchedMovies() {
     const { watchedMovies = [] } = questForLifeData || {};
-    if(logCheckboxEl.checked){
-        logCheckboxEl.checked = false;
-    }
 
     movieCardsEl.innerHTML = '';
     if (watchedMovies.length === 0) {
@@ -275,22 +277,30 @@ function renderWatchedMovies() {
         movieWatchedEmptyEl.classList.add('hidden');
         for (const m of watchedMovies.sort((a, b) => (b.watchedAt || 0) - (a.watchedAt || 0))) {
             const card = document.createElement('div');
-            card.className = 'card';
+            card.className = 'col-12 col-md-6 col-lg-4';
             const castChips = (m.cast || [])
-                .map(c => `<span class="chip" title="Cast">${escapeHTML(c)}</span>`)
-                .join('');
+            .map(c => `<span class="badge rounded-pill text-bg-info me-1">${escapeHTML(c)}</span>`)
+            .join('');
             card.innerHTML = `
-                <div style="display:flex; align-items:center; gap:10px; justify-content:space-between">
-                <h4>${escapeHTML(m.name || 'Untitled')}</h4>
-                <span class="badge" title="Platform">
-                    ${m.platform ? escapeHTML(m.platform) : '—'} · ${m.language ? escapeHTML(m.language) : '—'}
-                </span>
-                </div>
-                <div class="muted" style="font-size:12px">Watched on ${formatDate(m.watchedAt)}</div>
-                <div>${castChips || '<span class="muted">No cast listed</span>'}</div>
-                <div class="card-actions">
-                <button class="btn accent" data-act="movie-mark-unwatched" data-id="${m.id}" title="Move back to To Watch" aria-label="Move ${m.name} back to To Watch">🔁 Unwatch</button>
-                <button class="btn danger" data-act="movie-delete" data-id="${m.id}" title="Delete permanently" aria-label="Delete ${m.name}">🗑️ Delete</button>
+                <div class="card shadow-sm h-100">
+                    <div class="card-body d-flex flex-column gap-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">${escapeHTML(m.name || 'Untitled')}</h5>
+                        <span class="badge rounded-pill text-bg-dark">
+                            ${m.platform ? escapeHTML(m.platform) : '—'} · ${m.language ? escapeHTML(m.language) : '—'}
+                        </span>
+                    </div>
+                    <div class="text-muted small">Watched on ${formatDate(m.watchedAt)}</div>
+                    <div>${castChips || '<span class="text-muted small">No cast listed</span>'}</div>
+                    <div class="mt-auto d-flex justify-content-end gap-2">
+                        <button class="btn btn-primary" data-act="movie-mark-unwatched" data-id="${m.id}" title="Move back to To Watch">
+                            ↻ Unwatch
+                        </button>
+                        <button class="btn btn-danger" data-act="movie-delete" data-id="${m.id}" title="Delete permanently">
+                            ✕ Delete
+                        </button>
+                    </div>
+                    </div>
                 </div>
             `;
             movieCardsEl.appendChild(card);
@@ -387,13 +397,16 @@ function initMovieFilters() {
     });
 
     filterValueEl.addEventListener('change', renderMovies);
+    
+    moviesViewEl.addEventListener("change", function () {
+        if (this.checked) {
+            renderMovies();
+        }
+    });
 
     watchedCheckboxEl.addEventListener("change", function () {
         if(this.checked){
             renderWatchedMovies();
-        }
-        else if(!logCheckboxEl.checked){
-            renderMovies();
         }
     });
 
@@ -401,55 +414,11 @@ function initMovieFilters() {
         if(this.checked){
             renderLogs();
         }
-        else if(!watchedCheckboxEl.checked){
-            renderMovies();
-        }
     });
-}
-
-// Utilities
-function escapeHTML(str) {
-    return (str ?? '').toString().replace(/[&<>"']/g, s => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
-    }[s]));
-}
-
-function formatDate(ts) {
-    if (!ts) return '—';
-    try {
-        const d = new Date(ts);
-        return d.toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric' });
-    } catch { return '—' }
-}
-
-function formatDay(ts) {
-    const d = new Date(ts);
-    return d.toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
-}
-
-function formatTime(ts) {
-    const d = new Date(ts);
-    return d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
-}
-
-const toKey = v => (v ?? '').toString().trim().toLowerCase();
-
-// Map type to badge/icon/colors
-function typeMeta(type) {
-    switch ((type || '').toLowerCase()) {
-        case 'add': return { cls: 'add', label: 'Added', icon: '➕', bg: '#dbeafe', fg: '#1d4ed8' };
-        case 'watch': return { cls: 'watch', label: 'Watched', icon: '🎬', bg: '#d1fae5', fg: '#047857' };
-        case 'unwatch': return { cls: 'unwatch', label: 'Unwatched', icon: '↩', bg: '#fde68a', fg: '#b45309' };
-        case 'delete': return { cls: 'delete', label: 'Deleted', icon: '🗑', bg: '#fecaca', fg: '#b91c1c' };
-        default: return { cls: 'add', label: type, icon: '•', bg: '#e5e7eb', fg: '#111827' };
-    }
 }
 
 function renderLogs() {
     const { movieLogs = [] } = questForLifeData || {};
-    if(watchedCheckboxEl.checked){
-        watchedCheckboxEl.checked = false;
-    }
 
     movieLogContainerEl.innerHTML = '';
 
@@ -520,10 +489,48 @@ function renderLogs() {
     movieLogContainerEl.classList.remove('hidden');
 }
 
+// Utilities
+function escapeHTML(str) {
+    return (str ?? '').toString().replace(/[&<>"']/g, s => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+    }[s]));
+}
+
+function formatDate(ts) {
+    if (!ts) return '—';
+    try {
+        const d = new Date(ts);
+        return d.toLocaleString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
+    } catch { return '—' }
+}
+
+function formatDay(ts) {
+    const d = new Date(ts);
+    return d.toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+function formatTime(ts) {
+    const d = new Date(ts);
+    return d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+}
+
+const toKey = v => (v ?? '').toString().trim().toLowerCase();
+
+// Map type to badge/icon/colors
+function typeMeta(type) {
+    switch ((type || '').toLowerCase()) {
+        case 'add': return { cls: 'add', label: 'Added', icon: '➕', bg: '#dbeafe', fg: '#1d4ed8' };
+        case 'watch': return { cls: 'watch', label: 'Watched', icon: '🎬', bg: '#d1fae5', fg: '#047857' };
+        case 'unwatch': return { cls: 'unwatch', label: 'Unwatched', icon: '↩', bg: '#fde68a', fg: '#b45309' };
+        case 'delete': return { cls: 'delete', label: 'Deleted', icon: '🗑', bg: '#fecaca', fg: '#b91c1c' };
+        default: return { cls: 'add', label: type, icon: '•', bg: '#e5e7eb', fg: '#111827' };
+    }
+}
+
 /*****************
  * Add/Edit Movie
  *****************/
-const modal = document.getElementById('modal-movie');
+const movieModal = new bootstrap.Modal(document.getElementById('modal-movie'));
 const movieForm = document.getElementById('movie-form');
 const movieClose = document.getElementById('movie-close');
 const movieCancel = document.getElementById('movie-cancel');
@@ -534,24 +541,21 @@ const mfCast = document.getElementById('mf-cast');
 
 let editingId = null;
 
-document.getElementById('btn-add-movie').addEventListener('click', () => openMovieModal());
+document.getElementById('btn-add-movie').addEventListener('click', () => addMovieModal());
 
-function openMovieModal(movie = null) {
+function addMovieModal(movie = null) {
     editingId = movie?.id || null;
     movieForm.reset();
     mfName.value = movie?.name || '';
     mfLang.value = movie?.language || '';
     mfPlat.value = movie?.platform || '';
     mfCast.value = (movie?.cast || []).join(', ');
-    if (typeof modal.showModal === 'function') { modal.showModal(); } else { alert('Modal not supported in this browser.'); }
+    movieModal.show();
 }
 
 function closeMovieModal() {
-    if (modal.open) modal.close();
+    movieModal.hide();
 }
-
-movieClose.addEventListener('click', closeMovieModal);
-movieCancel.addEventListener('click', closeMovieModal);
 
 movieForm.addEventListener('submit', (e) => {
     e.preventDefault();
