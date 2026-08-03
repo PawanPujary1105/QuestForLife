@@ -1,0 +1,58 @@
+/* Home grid */
+.home-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(12, 1fr);
+}
+
+.home-card {
+  grid-column: span 12;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  background:
+    radial-gradient(
+      600px 280px at 100% 0%,
+      rgba(79, 70, 229, 0.18),
+      transparent 40%
+    ),
+    var(--panel-2);
+  transition: 0.15s ease;
+  cursor: pointer;
+}
+
+.home-card:hover {
+  transform: translateY(-2px);
+}
+
+.home-card h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.home-card p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.home-card .cta {
+  white-space: nowrap;
+  font-weight: 700;
+  color: var(--primary-2);
+}
+
+@media (min-width: 700px) {
+  .home-card {
+    grid-column: span 6;
+  }
+}
+
+@media (min-width: 1000px) {
+  .home-card {
+    grid-column: span 4;
+  }
+}
