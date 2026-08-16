@@ -6,194 +6,128 @@
     <title>Quest 4 Life</title>
     <meta name="theme-color" content="#0f172a" />
     <link rel="icon" type="image/png" href="images/favicon.png" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="css/main.css" />
     <script type="module" src="js/app.js" defer></script>
   </head>
   <body>
-    <header>
-      <div class="nav">
-        <div class="brand">
-          <div class="logo">
-            <img src="images/Quest4Life_Logo.png" alt="Quest 4 Life logo" />
-          </div>
-          <div>
-            <div>Quest 4 Life</div>
-            <div class="muted" style="font-size: 12px">
-              Movies • Gym • Recipes
+    <header class="border-bottom">
+      <div class="container">
+        <div class="d-flex align-items-center justify-content-between py-3 gap-3 flex-wrap">
+          <div class="d-flex align-items-center gap-3">
+            <img src="images/Quest4Life_Logo.png" alt="Quest 4 Life logo" width="40" height="40" class="rounded" />
+
+            <div>
+              <h5 class="mb-0">Quest 4 Life</h5>
+              <small class="text-secondary"> Movies • Gym • Recipes </small>
             </div>
           </div>
-        </div>
-        <div class="nav-tabs" role="tablist" aria-label="Sections">
-          <button class="tab active" data-view="home" aria-selected="true">
-            Home
-          </button>
-          <button class="tab" data-view="movies">Movie Zone</button>
-          <button class="tab" data-view="gym">Gym Zone</button>
-          <button class="tab" data-view="recipes">Recipe Zone</button>
-        </div>
 
-        <div class="nav-select">
-          <select id="section-select" aria-label="Select section">
-            <option value="home">Home</option>
-            <option value="movies">Movie Zone</option>
-            <option value="gym">Gym Zone</option>
-            <option value="recipes">Recipe Zone</option>
-          </select>
+          <div class="btn-group d-none d-md-flex" role="group" aria-label="Sections">
+            <button class="btn btn-outline-primary active" data-view="home" aria-selected="true">Home</button>
+            <button class="btn btn-outline-primary" data-view="movies">Movie Zone</button>
+            <button class="btn btn-outline-primary" data-view="gym">Gym Zone</button>
+            <button class="btn btn-outline-primary" data-view="recipes">Recipe Zone</button>
+          </div>
+
+          <div class="d-md-none w-100">
+            <select id="section-select" class="form-select" aria-label="Select section">
+              <option value="home">Home</option>
+              <option value="movies">Movie Zone</option>
+              <option value="gym">Gym Zone</option>
+              <option value="recipes">Recipe Zone</option>
+            </select>
+          </div>
         </div>
       </div>
     </header>
 
-    <main>
-      <!-- HOME -->
-      <section id="view-home" class="panel" aria-labelledby="home-title">
-        <div class="panel-header">
-          <div>
-            <div class="title" id="home-title">Welcome to Quest for Life!</div>
-            <div class="muted">
-              Side quests strongly recommended. Main quest is… complicated.
+    <main class="container my-4">
+      <section id="view-home" class="card shadow-sm" aria-labelledby="home-title">
+        <div class="card-body">
+          <h2 id="home-title" class="h3 mb-1">Welcome to Quest for Life!</h2>
+          <p class="text-muted mb-4">Side quests strongly recommended. Main quest is… complicated.</p>
+          <div class="row g-3">
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="home-card card h-100 shadow-sm" data-go="movies" tabindex="0" role="button" aria-label="Movie Zone">
+                <div class="card-body d-flex justify-content-between">
+                  <div>
+                    <h5 class="card-title"><i class="bi bi-collection-play-fill me-2"></i> Movie Zone</h5>
+                    <p class="card-text text-muted">Track movies you want to watch — so you stop rewatching the same ones again.</p>
+                  </div>
+                  <div class="cta text-primary fw-bold text-nowrap">Go →</div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-
-        <div class="home-grid">
-          <div
-            class="home-card"
-            data-go="movies"
-            tabindex="0"
-            role="button"
-            aria-label="Movie Zone"
-          >
-            <div>
-              <h3>🎬 Movie Zone</h3>
-              <p>
-                Track movies you want to watch — so you stop rewatching the same
-                ones again.
-              </p>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="home-card card h-100 shadow-sm" data-go="gym" tabindex="0" role="button" aria-label="Gym Zone">
+                <div class="card-body d-flex justify-content-between">
+                  <div>
+                    <h5 class="card-title"><i class="bi bi-heart-pulse-fill me-2 text-danger"></i> Gym Zone</h5>
+                    <p class="card-text text-muted">Plan workouts, track sets, and pretend you enjoyed leg day.</p>
+                  </div>
+                  <div class="cta text-primary fw-bold text-nowrap">Go →</div>
+                </div>
+              </div>
             </div>
-            <div class="cta">Open →</div>
-          </div>
-          <div
-            class="home-card"
-            data-go="gym"
-            tabindex="0"
-            role="button"
-            aria-label="Gym Zone"
-          >
-            <div>
-              <h3>💪 Gym Zone</h3>
-              <p>Plan workouts, track sets, and pretend you enjoyed leg day.</p>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="home-card card h-100 shadow-sm" data-go="recipes" tabindex="0" role="button" aria-label="Recipe Zone">
+                <div class="card-body d-flex justify-content-between">
+                  <div>
+                    <h5 class="card-title"><i class="bi bi-journal-richtext me-2 text-success"></i> Recipe Zone</h5>
+                    <p class="card-text text-muted">Save recipes, list ingredients, and still order food anyway.</p>
+                  </div>
+                  <div class="cta text-primary fw-bold text-nowrap">Go →</div>
+                </div>
+              </div>
             </div>
-            <div class="cta">Open →</div>
-          </div>
-          <div
-            class="home-card"
-            data-go="recipes"
-            tabindex="0"
-            role="button"
-            aria-label="Recipe Zone"
-          >
-            <div>
-              <h3>🍳 Recipe Zone</h3>
-              <p>
-                Save recipes, list ingredients, and still order food anyway.
-              </p>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="home-card card h-100 shadow-sm" data-go="outfits" tabindex="0" role="button" aria-label="Outfit Zone">
+                <div class="card-body d-flex justify-content-between">
+                  <div>
+                    <h5 class="card-title"><i class="bi bi-bookmarks-fill me-2 text-info"></i> Outfit Zone</h5>
+                    <p class="card-text text-muted">Track outfits so you don't accidentally wear Monday's shirt on Tuesday.</p>
+                  </div>
+                  <div class="cta text-primary fw-bold text-nowrap">Go →</div>
+                </div>
+              </div>
             </div>
-            <div class="cta">Open →</div>
           </div>
         </div>
       </section>
 
-      <!-- MOVIES -->
-      <section
-        id="view-movies"
-        class="panel hidden"
-        aria-labelledby="movies-title"
-      >
+      <section id="view-movies" class="panel hidden" aria-labelledby="movies-title">
         <div class="panel-header">
           <div>
             <div class="title" id="movies-title">🎬 Movie Zone</div>
-            <div class="muted">
-              Add movies to watch. Commitment optional. 🍿
-            </div>
+            <div class="muted">Add movies to watch. Commitment optional. 🍿</div>
           </div>
           <div class="controls" id="movie-control">
-            <button
-              id="btn-add-movie"
-              class="btn btn-primary"
-              title="Add a new movie"
-            >
-              ＋ Add Movie
-            </button>
-            <button
-              id="btn-export"
-              class="btn btn-secondary"
-              title="Export JSON"
-            >
-              ⤓ Save Movies
-            </button>
+            <button id="btn-add-movie" class="btn btn-primary" title="Add a new movie">＋ Add Movie</button>
+            <button id="btn-export" class="btn btn-secondary" title="Export JSON">⤓ Save Movies</button>
             <label class="btn btn-light">
               ⤒ Load Movies
-              <input
-                id="btn-import"
-                type="file"
-                accept="application/json"
-                class="hidden"
-              />
+              <input id="btn-import" type="file" accept="application/json" class="hidden" />
             </label>
-            <button
-              id="btn-release-pulse"
-              class="btn btn-dark"
-              title="Update release pulse"
-            >
-              ↻ Release Pulse
-            </button>
+            <button id="btn-release-pulse" class="btn btn-dark" title="Update release pulse">↻ Release Pulse</button>
           </div>
         </div>
         <div class="d-flex justify-content-end mb-2">
           <div class="btn-group">
-            <input
-              type="radio"
-              class="btn-check"
-              name="viewToggle"
-              id="movies-view"
-              checked
-            />
-            <label class="btn btn-outline-info btn-sm" for="movies-view">
-              Movies
-            </label>
-            <input
-              type="radio"
-              class="btn-check"
-              name="viewToggle"
-              id="watched-view"
-            />
-            <label class="btn btn-outline-info btn-sm" for="watched-view">
-              Watched
-            </label>
-            <input
-              type="radio"
-              class="btn-check"
-              name="viewToggle"
-              id="log-view"
-            />
-            <label class="btn btn-outline-info btn-sm" for="log-view">
-              Movie Log
-            </label>
+            <input type="radio" class="btn-check" name="viewToggle" id="movies-view" checked />
+            <label class="btn btn-outline-info btn-sm" for="movies-view"> Movies </label>
+            <input type="radio" class="btn-check" name="viewToggle" id="watched-view" />
+            <label class="btn btn-outline-info btn-sm" for="watched-view"> Watched </label>
+            <input type="radio" class="btn-check" name="viewToggle" id="log-view" />
+            <label class="btn btn-outline-info btn-sm" for="log-view"> Movie Log </label>
           </div>
         </div>
         <div id="movie-filter" class="filters-surface mb-3">
           <div class="row g-3 mb-2">
             <div class="col-12">
               <label for="search-movie" class="form-label">Search</label>
-              <input
-                id="search-movie"
-                class="form-control"
-                placeholder="Search by name, language, platform, or cast…"
-              />
+              <input id="search-movie" class="form-control" placeholder="Search by name, language, platform, or cast…" />
             </div>
           </div>
           <div class="row g-3 mb-3">
@@ -208,12 +142,7 @@
                   </select>
                 </div>
                 <div class="col-md-6">
-                  <label
-                    for="filter-value"
-                    id="filter-value-label"
-                    class="form-label"
-                    >Filter: Value</label
-                  >
+                  <label for="filter-value" id="filter-value-label" class="form-label">Filter: Value</label>
                   <select id="filter-value" class="form-select" disabled>
                     <option value="">All</option>
                   </select>
@@ -223,21 +152,12 @@
           </div>
           <div class="row g-3">
             <div class="col-12 col-md-3">
-              <span
-                id="release-pulse"
-                class="badge rounded-pill text-bg-dark w-100 py-2"
-              >
-                Release Pulse: <strong>19 Jun 2026</strong>
-              </span>
+              <span id="release-pulse" class="badge rounded-pill text-bg-dark w-100 py-2"> Release Pulse: <strong>19 Jun 2026</strong> </span>
             </div>
             <div class="col-12 col-md-9">
               <div class="result-pulse" aria-live="polite" aria-atomic="true">
-                <span id="movie-count" class="spark" aria-label="Movies found"
-                  >0 gems💎</span
-                >
-                <span id="movie-count-text" class="result-pulse-text">
-                  ready to watch 🎬</span
-                >
+                <span id="movie-count" class="spark" aria-label="Movies found">0 gems💎</span>
+                <span id="movie-count-text" class="result-pulse-text"> ready to watch 🎬</span>
               </div>
             </div>
           </div>
@@ -248,18 +168,11 @@
         </div>
         <div id="movie-log-container" class="movie-logs hidden"></div>
 
-        <div id="movie-empty" class="empty hidden">
-          No movies yet. Click <b>＋ Add Movie</b> to get started.
-        </div>
-        <div id="movie-watched-empty" class="empty hidden">
-          Nothing watched so far. The popcorn is disappointed 🍿
-        </div>
-        <div id="movie-log-empty" class="empty hidden">
-          No activity yet. Go make some movie history 🍿
-        </div>
+        <div id="movie-empty" class="empty hidden">No movies yet. Click <b>＋ Add Movie</b> to get started.</div>
+        <div id="movie-watched-empty" class="empty hidden">Nothing watched so far. The popcorn is disappointed 🍿</div>
+        <div id="movie-log-empty" class="empty hidden">No activity yet. Go make some movie history 🍿</div>
       </section>
 
-      <!-- GYM (stub) -->
       <section id="view-gym" class="panel hidden" aria-labelledby="gym-title">
         <div class="panel-header">
           <div>
@@ -267,37 +180,70 @@
             <div class="muted">Stub for now. Add exercises later.</div>
           </div>
           <div class="controls">
-            <button class="btn primary" id="btn-add-exercise">
-              ＋ Add Exercise
-            </button>
+            <button class="btn primary" id="btn-add-exercise">＋ Add Exercise</button>
           </div>
         </div>
 
-        <div id="gym-list" class="empty">
-          No exercises added yet. (You can extend this section later.)
-        </div>
+        <div id="gym-list" class="empty">No exercises added yet. (You can extend this section later.)</div>
       </section>
 
-      <!-- RECIPES (stub) -->
-      <section
-        id="view-recipes"
-        class="panel hidden"
-        aria-labelledby="recipes-title"
-      >
+      <section id="view-recipes" class="panel hidden" aria-labelledby="recipes-title">
         <div class="panel-header">
           <div>
             <div class="title" id="recipes-title">🍳 Recipe Zone</div>
             <div class="muted">Stub for now. Add recipes later.</div>
           </div>
           <div class="controls">
-            <button class="btn primary" id="btn-add-recipe">
-              ＋ Add Recipe
-            </button>
+            <button class="btn primary" id="btn-add-recipe">＋ Add Recipe</button>
           </div>
         </div>
 
-        <div id="recipe-list" class="empty">
-          No recipes added yet. (You can extend this section later.)
+        <div id="recipe-list" class="empty">No recipes added yet. (You can extend this section later.)</div>
+      </section>
+
+      <section id="view-outfits" class="card shadow-sm hidden" aria-labelledby="outfits-title">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h2 class="h4 mb-1" id="outfits-title">
+                <i class="bi bi-bookmarks-fill me-2 text-info"></i>
+                Outfit Zone
+              </h2>
+              <div class="text-muted">Track outfits, usage history and laundry cycles.</div>
+            </div>
+            <div class="d-flex gap-2">
+              <button id="btn-reset-usage" class="btn btn-outline-danger hidden">🧹 Reset Usage</button>
+              <button id="btn-outfit-action" class="btn btn-primary">＋ Add Outfit</button>
+            </div>
+          </div>
+
+          <ul class="nav nav-tabs mb-3" id="outfit-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="outfits-tab" data-bs-toggle="tab" data-bs-target="#outfits-pane" type="button" role="tab">Outfits</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="usage-log-tab" data-bs-toggle="tab" data-bs-target="#usage-log-pane" type="button" role="tab">Usage Log</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="laundry-tab" data-bs-toggle="tab" data-bs-target="#laundry-pane" type="button" role="tab">Laundry</button>
+            </li>
+          </ul>
+
+          <div class="tab-content">
+            <div class="tab-pane fade show active" id="outfits-pane" role="tabpanel">
+              <div id="outfit-cards" class="row g-3"></div>
+
+              <div id="outfit-empty" class="empty">No outfits yet. Click <b>＋ Add Outfit</b> to get started.</div>
+            </div>
+            <div class="tab-pane fade" id="usage-log-pane" role="tabpanel">
+              <div id="outfit-log-container"></div>
+              <div id="outfit-log-empty" class="empty">No outfit usage logged yet.</div>
+            </div>
+            <div class="tab-pane fade" id="laundry-pane" role="tabpanel">
+              <div id="outfit-laundry-container" class="row g-3"></div>
+              <div id="outfit-laundry-empty" class="empty">No laundry information available yet.</div>
+            </div>
+          </div>
         </div>
       </section>
     </main>
@@ -308,72 +254,107 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Add Movie</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
             <form id="movie-form">
               <div class="row g-3">
                 <div class="col-12">
                   <label class="form-label">Movie Name *</label>
-                  <input
-                    id="mf-name"
-                    class="form-control"
-                    placeholder="e.g., Su From So"
-                    required
-                  />
+                  <input id="mf-name" class="form-control" placeholder="e.g., Su From So" required />
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Language</label>
-                  <input
-                    id="mf-language"
-                    class="form-control"
-                    placeholder="e.g., Kannada"
-                  />
+                  <input id="mf-language" class="form-control" placeholder="e.g., Kannada" />
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Streaming Platform</label>
-                  <input
-                    id="mf-platform"
-                    class="form-control"
-                    placeholder="e.g., Netflix, Prime Video"
-                  />
+                  <input id="mf-platform" class="form-control" placeholder="e.g., Netflix, Prime Video" />
                 </div>
                 <div class="col-12">
                   <label class="form-label">Starcast</label>
-                  <input
-                    id="mf-cast"
-                    class="form-control"
-                    placeholder="e.g., Raj B Shetty, J.P.Thuminad"
-                  />
+                  <input id="mf-cast" class="form-control" placeholder="e.g., Raj B Shetty, J.P.Thuminad" />
                 </div>
                 <div class="col-12">
-                  <small class="text-muted">
-                    Tip: You can update/delete later. Data is stored in your
-                    browser.
-                  </small>
+                  <small class="text-muted"> Tip: You can update/delete later. Data is stored in your browser. </small>
                 </div>
               </div>
             </form>
           </div>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Cancel
-            </button>
-            <button type="submit" form="movie-form" class="btn btn-primary">
-              Save Movie
-            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" form="movie-form" class="btn btn-primary">Save Movie</button>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Add Outfit Modal -->
+    <div class="modal fade" id="modal-outfit" tabindex="-1">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Outfit</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="outfit-form">
+              <div class="row g-3">
+                <div class="col-md-8">
+                  <label class="form-label"> Outfit Name * </label>
+                  <input id="of-name" class="form-control" placeholder="e.g. Blue Formal Shirt" required />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label"> Occasion * </label>
+                  <select id="of-occasion" class="form-select" required>
+                    <option value="Office">Office</option>
+                    <option value="Gym">Gym</option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <small class="text-muted"> Add shirts, pants, shoes, tees or any outfit item you want to track. </small>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" form="outfit-form" class="btn btn-primary">Save Outfit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Outfit Usage Modal -->
+    <div class="modal fade" id="modal-outfit-log" tabindex="-1">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Log Outfit Usage</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="outfit-log-form">
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label class="form-label">Date</label>
+                  <input id="olf-date" type="date" class="form-control" required />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Outfit</label>
+                  <select id="olf-outfit" class="form-select" required></select>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" form="outfit-log-form" class="btn btn-primary">Save Usage</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

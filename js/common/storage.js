@@ -8,6 +8,8 @@ const DEFAULT_QFL_DATA = {
   movieLogs: [],
   exercises: [],
   recipes: [],
+  outfits: [],
+  outfitLogs: [],
   releasePulse: null,
 };
 
@@ -27,6 +29,8 @@ export function loadState() {
     if (!storedQFLData.movieLogs) storedQFLData.movieLogs = [];
     if (!storedQFLData.exercises) storedQFLData.exercises = [];
     if (!storedQFLData.recipes) storedQFLData.recipes = [];
+    if (!storedQFLData.outfits) storedQFLData.outfits = [];
+    if (!storedQFLData.outfitLogs) storedQFLData.outfitLogs = [];
     return storedQFLData;
   } catch (e) {
     console.warn("Data fetch from local storage: ", e);

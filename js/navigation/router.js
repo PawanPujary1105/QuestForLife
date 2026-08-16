@@ -2,17 +2,15 @@ import { initMovieFilters } from "../pages/movies.js";
 
 export let currentView = "home";
 
-/***************
- * Simple Router
- ***************/
 const views = {
   home: document.getElementById("view-home"),
   movies: document.getElementById("view-movies"),
   gym: document.getElementById("view-gym"),
   recipes: document.getElementById("view-recipes"),
+  outfits: document.getElementById("view-outfits"),
 };
 
-const tabs = [...document.querySelectorAll(".tab")];
+const tabs = [...document.querySelectorAll("[data-view]")];
 
 function showView(name) {
   currentView = name;
@@ -58,7 +56,6 @@ document.querySelectorAll("[data-go]").forEach((card) => {
   });
 });
 
-// Persist view via hash (optional)
 window.addEventListener("hashchange", () => {
   const target = location.hash.replace("#", "");
 
@@ -78,8 +75,5 @@ const sectionSelect = document.getElementById("section-select");
 if (sectionSelect) {
   sectionSelect.addEventListener("change", (e) => {
     showView(e.target.value);
-
-    // Optional: sync the hash if you’re using it as a permalink
-    // location.hash = e.target.value;
   });
 }

@@ -1,14 +1,5 @@
 import { questForLifeData, saveState } from "../common/storage.js";
-
-import {
-  escapeHTML,
-  formatDate,
-  formatDay,
-  formatTime,
-  toKey,
-  typeMeta,
-} from "../common/utils.js";
-
+import { escapeHTML, formatDate, formatDay, formatTime, toKey, typeMeta } from "../common/utils.js";
 import { currentView } from "../navigation/router.js";
 
 const movieCardsEl = document.getElementById("movie-cards");
@@ -29,9 +20,7 @@ const filterValueLabel = document.getElementById("filter-value-label");
 
 function getFacetValues(field) {
   const values = new Map(); // key -> display value
-  const sourceMovies = watchedCheckboxEl.checked
-    ? questForLifeData.watchedMovies || []
-    : questForLifeData.movies || [];
+  const sourceMovies = watchedCheckboxEl.checked ? questForLifeData.watchedMovies || [] : questForLifeData.movies || [];
   if (!Array.isArray(sourceMovies) || !field) return [];
 
   for (const m of sourceMovies) {
@@ -68,15 +57,7 @@ function populateFilterValueOptions() {
 
   const values = getFacetValues(field);
 
-  const options = [
-    `<option value="">All ${escapeHTML(pretty.toLowerCase())}s</option>`,
-  ]
-    .concat(
-      values.map(
-        (v) => `<option value="${escapeHTML(v)}">${escapeHTML(v)}</option>`,
-      ),
-    )
-    .join("");
+  const options = [`<option value="">All ${escapeHTML(pretty.toLowerCase())}s</option>`].concat(values.map((v) => `<option value="${escapeHTML(v)}">${escapeHTML(v)}</option>`)).join("");
 
   filterValueEl.innerHTML = options;
   filterValueEl.disabled = false;
@@ -93,15 +74,7 @@ export function renderMovies() {
   const value = filterValueEl.value;
 
   const filtered = movies.filter((m) => {
-    const hay = [
-      m.name,
-      m.language,
-      m.platform,
-      ...(Array.isArray(m.cast) ? m.cast : []),
-    ]
-      .filter(Boolean)
-      .join(" ")
-      .toLowerCase();
+    const hay = [m.name, m.language, m.platform, ...(Array.isArray(m.cast) ? m.cast : [])].filter(Boolean).join(" ").toLowerCase();
 
     const okQ = q ? hay.includes(q) : true;
 
@@ -128,19 +101,12 @@ export function renderMovies() {
   } else {
     movieEmptyEl.classList.add("hidden");
 
-    for (const m of filtered.sort(
-      (a, b) => (b.createdAt || 0) - (a.createdAt || 0),
-    )) {
+    for (const m of filtered.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))) {
       const card = document.createElement("div");
 
       card.className = "col-12 col-md-6 col-lg-4";
 
-      const castChips = (m.cast || [])
-        .map(
-          (c) =>
-            `<span class="badge rounded-pill text-bg-info me-1">${escapeHTML(c)}</span>`,
-        )
-        .join("");
+      const castChips = (m.cast || []).map((c) => `<span class="badge rounded-pill text-bg-info me-1">${escapeHTML(c)}</span>`).join("");
 
       card.innerHTML = `
                 <div class="card shadow-sm h-100">
@@ -169,49 +135,40 @@ export function renderMovies() {
 
   populateFilterValueOptions();
 
-  if (
-    before &&
-    Array.from(filterValueEl.options).some(
-      (o) => toKey(o.value) === toKey(before),
-    )
-  ) {
+  if (before && Array.from(filterValueEl.options).some((o) => toKey(o.value) === toKey(before))) {
     filterValueEl.value = before;
   }
 
-  movieCardsEl
-    .querySelectorAll('[data-act="movie-mark-watched"]')
-    .forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const id = btn.dataset.id;
+  movieCardsEl.querySelectorAll('[data-act="movie-mark-watched"]').forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.id;
 
-        const watchedMovie = questForLifeData.movies.find((x) => x.id === id);
+      const watchedMovie = questForLifeData.movies.find((x) => x.id === id);
 
-        if (!watchedMovie) return;
+      if (!watchedMovie) return;
 
-        const ok = confirm(`Mark "${watchedMovie.name}" as watched?`);
+      const ok = confirm(`Mark "${watchedMovie.name}" as watched?`);
 
-        if (!ok) return;
+      if (!ok) return;
 
-        questForLifeData.movies = questForLifeData.movies.filter(
-          (x) => x.id !== id,
-        );
+      questForLifeData.movies = questForLifeData.movies.filter((x) => x.id !== id);
 
-        watchedMovie.watchedAt = Date.now();
+      watchedMovie.watchedAt = Date.now();
 
-        questForLifeData.watchedMovies.push(watchedMovie);
+      questForLifeData.watchedMovies.push(watchedMovie);
 
-        const movieLog = structuredClone(watchedMovie);
+      const movieLog = structuredClone(watchedMovie);
 
-        movieLog.logType = "Watch";
-        movieLog.logTime = Date.now();
-        movieLog.moviesCount = questForLifeData.movies.length;
+      movieLog.logType = "Watch";
+      movieLog.logTime = Date.now();
+      movieLog.moviesCount = questForLifeData.movies.length;
 
-        questForLifeData.movieLogs.unshift(movieLog);
+      questForLifeData.movieLogs.unshift(movieLog);
 
-        saveState();
-        renderMovies();
-      });
+      saveState();
+      renderMovies();
     });
+  });
 
   movieCardsEl.querySelectorAll('[data-act="movie-edit"]').forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -243,15 +200,7 @@ function renderWatchedMovies() {
   const field = filterByEl.value;
   const value = filterValueEl.value;
   const filtered = watchedMovies.filter((m) => {
-    const hay = [
-      m.name,
-      m.language,
-      m.platform,
-      ...(Array.isArray(m.cast) ? m.cast : []),
-    ]
-      .filter(Boolean)
-      .join(" ")
-      .toLowerCase();
+    const hay = [m.name, m.language, m.platform, ...(Array.isArray(m.cast) ? m.cast : [])].filter(Boolean).join(" ").toLowerCase();
     const okQ = q ? hay.includes(q) : true;
     let okFacet = true;
     if (field && value) {
@@ -273,19 +222,12 @@ function renderWatchedMovies() {
   } else {
     movieWatchedEmptyEl.classList.add("hidden");
 
-    for (const m of filtered.sort(
-      (a, b) => (b.watchedAt || 0) - (a.watchedAt || 0),
-    )) {
+    for (const m of filtered.sort((a, b) => (b.watchedAt || 0) - (a.watchedAt || 0))) {
       const card = document.createElement("div");
 
       card.className = "col-12 col-md-6 col-lg-4";
 
-      const castChips = (m.cast || [])
-        .map(
-          (c) =>
-            `<span class="badge rounded-pill text-bg-info me-1">${escapeHTML(c)}</span>`,
-        )
-        .join("");
+      const castChips = (m.cast || []).map((c) => `<span class="badge rounded-pill text-bg-info me-1">${escapeHTML(c)}</span>`).join("");
 
       card.innerHTML = `
                 <div class="card shadow-sm h-100">
@@ -314,40 +256,34 @@ function renderWatchedMovies() {
     }
   }
 
-  movieCardsEl
-    .querySelectorAll('[data-act="movie-mark-unwatched"]')
-    .forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const id = btn.dataset.id;
+  movieCardsEl.querySelectorAll('[data-act="movie-mark-unwatched"]').forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.id;
 
-        const movie = questForLifeData.watchedMovies.find((x) => x.id === id);
+      const movie = questForLifeData.watchedMovies.find((x) => x.id === id);
 
-        if (!movie) return;
+      if (!movie) return;
 
-        const ok = confirm(
-          `You blinked the whole time, didn't you. Add "${movie.name}" back to watchlist?`,
-        );
+      const ok = confirm(`You blinked the whole time, didn't you. Add "${movie.name}" back to watchlist?`);
 
-        if (!ok) return;
+      if (!ok) return;
 
-        questForLifeData.watchedMovies = questForLifeData.watchedMovies.filter(
-          (x) => x.id !== id,
-        );
+      questForLifeData.watchedMovies = questForLifeData.watchedMovies.filter((x) => x.id !== id);
 
-        questForLifeData.movies.push(movie);
+      questForLifeData.movies.push(movie);
 
-        const movieLog = structuredClone(movie);
+      const movieLog = structuredClone(movie);
 
-        movieLog.logType = "Unwatch";
-        movieLog.logTime = Date.now();
-        movieLog.moviesCount = questForLifeData.movies.length;
+      movieLog.logType = "Unwatch";
+      movieLog.logTime = Date.now();
+      movieLog.moviesCount = questForLifeData.movies.length;
 
-        questForLifeData.movieLogs.unshift(movieLog);
+      questForLifeData.movieLogs.unshift(movieLog);
 
-        saveState("watched");
-        renderWatchedMovies();
-      });
+      saveState("watched");
+      renderWatchedMovies();
     });
+  });
 
   movieCardsEl.querySelectorAll('[data-act="movie-delete"]').forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -361,9 +297,7 @@ function renderWatchedMovies() {
 
       if (!ok) return;
 
-      questForLifeData.watchedMovies = questForLifeData.watchedMovies.filter(
-        (x) => x.id !== id,
-      );
+      questForLifeData.watchedMovies = questForLifeData.watchedMovies.filter((x) => x.id !== id);
 
       const movieLog = structuredClone(movie);
 
@@ -396,22 +330,17 @@ function movieCount(movies, mode = "movies") {
   switch (movies.length) {
     case 0:
       movieCountEl.innerHTML = "";
-      movieCountTextEl.innerHTML =
-        mode === "movies"
-          ? "No gems💎 yet — add your first one ✨"
-          : "Nothing watched yet 🍿";
+      movieCountTextEl.innerHTML = mode === "movies" ? "No gems💎 yet — add your first one ✨" : "Nothing watched yet 🍿";
       break;
 
     case 1:
       movieCountEl.innerHTML = movies.length + " gem💎";
-      movieCountTextEl.innerHTML =
-        mode === "movies" ? " ready to watch 🎬" : " already watched 🍿";
+      movieCountTextEl.innerHTML = mode === "movies" ? " ready to watch 🎬" : " already watched 🍿";
       break;
 
     default:
       movieCountEl.innerHTML = movies.length + " gems💎";
-      movieCountTextEl.innerHTML =
-        mode === "movies" ? " ready to watch 🎬" : " already watched 🍿";
+      movieCountTextEl.innerHTML = mode === "movies" ? " ready to watch 🎬" : " already watched 🍿";
   }
 }
 
@@ -513,12 +442,7 @@ function renderLogs() {
 
         const lang = log.language ? `${log.language}` : "";
 
-        const cast =
-          Array.isArray(log.cast) && log.cast.length
-            ? `${log.cast.slice(0, 2).join(", ")}${
-                log.cast.length > 2 ? "…" : ""
-              }`
-            : "";
+        const cast = Array.isArray(log.cast) && log.cast.length ? `${log.cast.slice(0, 2).join(", ")}${log.cast.length > 2 ? "…" : ""}` : "";
 
         const item = document.createElement("div");
 
@@ -582,9 +506,7 @@ const mfCast = document.getElementById("mf-cast");
 
 let editingId = null;
 
-document
-  .getElementById("btn-add-movie")
-  .addEventListener("click", () => addMovieModal());
+document.getElementById("btn-add-movie").addEventListener("click", () => addMovieModal());
 
 function addMovieModal(movie = null) {
   editingId = movie?.id || null;
@@ -645,9 +567,7 @@ movieForm.addEventListener("submit", (e) => {
     });
   }
 
-  const movieLog = structuredClone(
-    questForLifeData.movies[questForLifeData.movies.length - 1],
-  );
+  const movieLog = structuredClone(questForLifeData.movies[questForLifeData.movies.length - 1]);
 
   movieLog.logType = "Add";
   movieLog.logTime = Date.now();
@@ -660,9 +580,7 @@ movieForm.addEventListener("submit", (e) => {
   closeMovieModal();
 });
 
-document
-  .getElementById("btn-release-pulse")
-  .addEventListener("click", () => updateReleasePulse());
+document.getElementById("btn-release-pulse").addEventListener("click", () => updateReleasePulse());
 
 /*******************************
  * Import / Export (JSON file)
@@ -703,18 +621,13 @@ btnLoadFolder.addEventListener("change", async (e) => {
       throw new Error("Invalid file.");
     }
 
-    // Merge strategy: replace everything for simplicity
     questForLifeData.movies = Array.isArray(data.movies) ? data.movies : [];
-    questForLifeData.watchedMovies = Array.isArray(data.watchedMovies)
-      ? data.watchedMovies
-      : [];
-    questForLifeData.movieLogs = Array.isArray(data.movieLogs)
-      ? data.movieLogs
-      : [];
-    questForLifeData.exercises = Array.isArray(data.exercises)
-      ? data.exercises
-      : [];
+    questForLifeData.watchedMovies = Array.isArray(data.watchedMovies) ? data.watchedMovies : [];
+    questForLifeData.movieLogs = Array.isArray(data.movieLogs) ? data.movieLogs : [];
+    questForLifeData.exercises = Array.isArray(data.exercises) ? data.exercises : [];
     questForLifeData.recipes = Array.isArray(data.recipes) ? data.recipes : [];
+    questForLifeData.outfits = Array.isArray(data.outfits) ? data.outfits : [];
+    questForLifeData.outfitLogs = Array.isArray(data.outfitLogs) ? data.outfitLogs : [];
     questForLifeData.releasePulse = data.releasePulse ?? null;
 
     saveState();
