@@ -10,6 +10,7 @@ const DEFAULT_QFL_DATA = {
   recipes: [],
   outfits: [],
   outfitLogs: [],
+  outfitOccasions: ["Office", "Gym"],
   releasePulse: null,
 };
 
@@ -31,6 +32,16 @@ export function loadState() {
     if (!storedQFLData.recipes) storedQFLData.recipes = [];
     if (!storedQFLData.outfits) storedQFLData.outfits = [];
     if (!storedQFLData.outfitLogs) storedQFLData.outfitLogs = [];
+    if (!Array.isArray(storedQFLData.outfitOccasions)) {
+      storedQFLData.outfitOccasions = [...DEFAULT_QFL_DATA.outfitOccasions];
+    }
+    storedQFLData.outfitOccasions = [
+      ...new Set([
+        ...DEFAULT_QFL_DATA.outfitOccasions,
+        ...storedQFLData.outfitOccasions,
+        ...(storedQFLData.outfits || []).map((outfit) => outfit.occasion).filter(Boolean),
+      ]),
+    ];
     return storedQFLData;
   } catch (e) {
     console.warn("Data fetch from local storage: ", e);
