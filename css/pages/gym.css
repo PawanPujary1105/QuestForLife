@@ -1,0 +1,48 @@
+.gym-rest-timer {
+  position: relative;
+  width: min(70vw, 260px);
+  aspect-ratio: 1;
+}
+
+.gym-rest-timer svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.gym-rest-track,
+.gym-rest-progress {
+  fill: none;
+  stroke-width: 12;
+}
+
+.gym-rest-track {
+  stroke: var(--bs-secondary-bg);
+}
+
+.gym-rest-progress {
+  stroke: var(--bs-primary);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 100ms linear;
+}
+
+.gym-rest-timer-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.gym-rest-countdown {
+  font-size: clamp(3rem, 10vw, 5rem);
+  font-weight: 600;
+  line-height: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gym-rest-progress {
+    transition: none;
+  }
+}

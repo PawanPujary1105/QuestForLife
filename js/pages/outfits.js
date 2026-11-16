@@ -129,12 +129,13 @@ resetUsageBtn.addEventListener("click", () => {
       return;
     }
 
-    const ok = confirm(`Reset all ${selectedLog.occasion} usage logs on and before ${formatDate(selectedLog.usedAt)}?`);
+    const resetCutoff = selectedLog.usedAt;
+    const ok = confirm(`Reset all ${selectedOccasion} usage logs on and before ${formatDate(resetCutoff)}?`);
     if (!ok) {
       return;
     }
 
-    questForLifeData.outfitLogs = questForLifeData.outfitLogs.filter((log) => !(log.occasion === selectedLog.occasion && log.usedAt <= selectedLog.usedAt));
+    questForLifeData.outfitLogs = questForLifeData.outfitLogs.filter((log) => log.occasion !== selectedOccasion || log.usedAt > resetCutoff);
     saveState();
 
     resetMode = false;
@@ -273,7 +274,7 @@ function renderOutfitLogs() {
     banner.className = "alert alert-warning";
     banner.innerHTML = `
         <strong>Reset Mode</strong><br>
-        Select a usage log. All ${selectedResetLogId ? "older" : "matching"} occasion logs from that date backward will be removed.
+        Select a ${escapeHTML(selectedOccasion)} log. Confirming removes all ${escapeHTML(selectedOccasion)} usage logs on and before the selected date.
       `;
     outfitLogContainerEl.appendChild(banner);
   }

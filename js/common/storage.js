@@ -7,6 +7,8 @@ const DEFAULT_QFL_DATA = {
   watchedMovies: [],
   movieLogs: [],
   exercises: [],
+  workoutPlans: [],
+  gymLogs: [],
   recipes: [],
   outfits: [],
   outfitLogs: [],
@@ -28,7 +30,9 @@ export function loadState() {
     if (!storedQFLData.movies) storedQFLData.movies = [];
     if (!storedQFLData.watchedMovies) storedQFLData.watchedMovies = [];
     if (!storedQFLData.movieLogs) storedQFLData.movieLogs = [];
-    if (!storedQFLData.exercises) storedQFLData.exercises = [];
+    if (!Array.isArray(storedQFLData.exercises)) storedQFLData.exercises = [];
+    if (!Array.isArray(storedQFLData.workoutPlans)) storedQFLData.workoutPlans = [];
+    if (!Array.isArray(storedQFLData.gymLogs)) storedQFLData.gymLogs = [];
     if (!storedQFLData.recipes) storedQFLData.recipes = [];
     if (!storedQFLData.outfits) storedQFLData.outfits = [];
     if (!storedQFLData.outfitLogs) storedQFLData.outfitLogs = [];

@@ -175,18 +175,78 @@
         <div id="movie-log-empty" class="empty hidden">No activity yet. Go make some movie history 🍿</div>
       </section>
 
-      <section id="view-gym" class="panel hidden" aria-labelledby="gym-title">
-        <div class="panel-header">
-          <div>
-            <div class="title" id="gym-title">💪 Gym Zone</div>
-            <div class="muted">Stub for now. Add exercises later.</div>
+      <section id="view-gym" class="card shadow-sm hidden" aria-label="Gym Zone">
+        <div class="card-body">
+          <div id="gym-folder-view">
+            <div class="mb-3">
+              <h2 class="h4 mb-1" id="gym-title">
+                <i class="bi bi-heart-pulse-fill me-2 text-danger"></i>
+                Gym Zone
+              </h2>
+              <div class="text-muted">Choose Plans, Logs, or Exercises.</div>
+            </div>
+            <div id="gym-folders" class="row g-3"></div>
           </div>
-          <div class="controls">
-            <button class="btn primary" id="btn-add-exercise">＋ Add Exercise</button>
+
+          <div id="gym-detail-view" class="hidden">
+            <div id="gym-detail-header" class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+              <div class="d-flex align-items-center gap-3">
+                <button id="btn-back-gym-folders" type="button" class="btn btn-outline-secondary">← Folders</button>
+                <h2 class="h4 mb-0" id="gym-detail-title"></h2>
+              </div>
+              <button id="btn-gym-action" type="button" class="btn btn-primary"></button>
+            </div>
+
+            <div id="gym-plans-view" class="hidden">
+              <div id="gym-plans-list" class="row g-3"></div>
+              <div id="gym-plans-empty" class="empty mt-3">No plans yet. Click <b>＋ Add Plan</b> to get started.</div>
+            </div>
+            <div id="gym-logs-view" class="hidden">
+              <div id="gym-logs-list-view">
+                <div id="gym-logs-list" class="row g-3"></div>
+                <div id="gym-logs-empty" class="empty mt-3">No workout logs yet. Click <b>＋ Add Log</b> to get started.</div>
+              </div>
+              <div id="gym-log-detail-view" class="hidden">
+                <div class="d-flex justify-content-between align-items-center gap-3 mb-3 flex-wrap">
+                  <div class="d-flex align-items-center gap-3">
+                    <button id="btn-back-gym-logs" type="button" class="btn btn-outline-secondary">← Logs</button>
+                    <div>
+                      <h3 id="gym-log-detail-title" class="h5 mb-1"></h3>
+                      <div id="gym-log-detail-meta" class="small text-muted"></div>
+                    </div>
+                  </div>
+                  <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <span id="gym-rest-duration" class="small text-muted">Rest: 60 seconds</span>
+                    <button id="btn-start-gym-rest" type="button" class="btn btn-primary">Start Rest</button>
+                    <button id="btn-set-gym-rest" type="button" class="btn btn-outline-primary">Set Rest</button>
+                    <button id="btn-add-gym-rep" type="button" class="btn btn-outline-primary">＋ Add Rep</button>
+                  </div>
+                </div>
+                <div id="gym-log-exercises" class="row g-3"></div>
+                <div id="gym-log-exercises-empty" class="empty mt-3">No exercises in this plan.</div>
+              </div>
+            </div>
+            <div id="gym-exercises-view" class="hidden">
+              <div id="gym-exercises-list" class="row g-3"></div>
+              <div id="gym-exercises-empty" class="empty mt-3">No exercises yet. Click <b>＋ Add Exercise</b> to get started.</div>
+            </div>
+          </div>
+          <div id="gym-rest-timer-view" class="hidden text-center py-4">
+            <h2 class="h4 mb-4">Rest Timer</h2>
+            <div id="gym-rest-timer" class="gym-rest-timer mx-auto mb-4" role="timer" aria-label="60 seconds remaining">
+              <svg viewBox="0 0 220 220" aria-hidden="true">
+                <circle class="gym-rest-track" cx="110" cy="110" r="98"></circle>
+                <circle id="gym-rest-progress" class="gym-rest-progress" cx="110" cy="110" r="98"></circle>
+              </svg>
+              <div class="gym-rest-timer-content">
+                <span id="gym-rest-countdown" class="gym-rest-countdown">60</span>
+                <span class="text-muted">seconds</span>
+              </div>
+            </div>
+            <div id="gym-rest-complete" class="text-success fw-semibold mb-3 hidden" aria-live="polite">Rest complete.</div>
+            <button id="btn-exit-gym-rest" type="button" class="btn btn-outline-secondary">Stop Rest</button>
           </div>
         </div>
-
-        <div id="gym-list" class="empty">No exercises added yet. (You can extend this section later.)</div>
       </section>
 
       <section id="view-recipes" class="panel hidden" aria-labelledby="recipes-title">
@@ -341,6 +401,179 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             <button type="submit" form="outfit-form" class="btn btn-primary">Save Outfit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Gym Plan Modal -->
+    <div class="modal fade" id="modal-gym-plan" tabindex="-1">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="gym-plan-modal-title">Add Plan</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="gym-plan-form">
+              <div class="mb-3">
+                <label for="gp-name" class="form-label">Plan name *</label>
+                <input id="gp-name" class="form-control" placeholder="e.g. Push Day" maxlength="60" required />
+              </div>
+              <fieldset class="mb-3">
+                <legend class="form-label">Muscles *</legend>
+                <div id="gp-muscle-options" class="row g-2"></div>
+              </fieldset>
+              <fieldset>
+                <legend class="form-label">Exercises</legend>
+                <p class="form-text">Choose muscles to see available exercises, then select any to include in this plan.</p>
+                <div id="gp-exercise-options" class="row g-2"></div>
+                <div id="gp-exercise-empty" class="small text-muted mt-2" aria-live="polite"></div>
+              </fieldset>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button id="btn-save-gym-plan" type="submit" form="gym-plan-form" class="btn btn-primary">Save Plan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Gym Log Modal -->
+    <div class="modal fade" id="modal-gym-log" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Workout Log</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="gym-log-form">
+              <div class="mb-3">
+                <label for="gl-plan" class="form-label">Plan *</label>
+                <select id="gl-plan" class="form-select" required></select>
+                <div id="gl-plan-empty" class="form-text"></div>
+              </div>
+              <div>
+                <label for="gl-date" class="form-label">Date *</label>
+                <input id="gl-date" type="date" class="form-control" required />
+              </div>
+              <div id="gl-status-field" class="mt-3 hidden">
+                <label for="gl-status" class="form-label">Status *</label>
+                <select id="gl-status" class="form-select" required>
+                  <option value="scheduled">Scheduled</option>
+                  <option value="completed">Completed</option>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button id="btn-save-gym-log" type="submit" form="gym-log-form" class="btn btn-primary">Save Log</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Set Gym Rest Modal -->
+    <div class="modal fade" id="modal-gym-rest" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Set Rest Duration</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="gym-rest-form">
+              <label for="gym-rest-seconds" class="form-label">Rest time (seconds) *</label>
+              <input id="gym-rest-seconds" type="number" class="form-control" min="1" step="1" required />
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" form="gym-rest-form" class="btn btn-primary">Save Rest</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Gym Rep Modal -->
+    <div class="modal fade" id="modal-gym-rep" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Rep</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="gym-rep-form">
+              <div class="mb-3">
+                <label for="gym-rep-exercise" class="form-label">Exercise *</label>
+                <select id="gym-rep-exercise" class="form-select" required></select>
+              </div>
+              <div class="mb-3">
+                <label for="gym-rep-count" class="form-label">Number of reps *</label>
+                <input id="gym-rep-count" type="number" class="form-control" min="1" step="1" required />
+              </div>
+              <div>
+                <label for="gym-rep-weight" class="form-label">Weight *</label>
+                <input id="gym-rep-weight" type="number" class="form-control" min="0" step="any" required />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" form="gym-rep-form" class="btn btn-primary">Save Rep</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Gym Reps Modal -->
+    <div class="modal fade" id="modal-gym-rep-edit" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 id="gym-rep-edit-modal-title" class="modal-title">Edit Reps</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="gym-rep-edit-form">
+              <div id="gym-rep-edit-fields" class="d-flex flex-column gap-3"></div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" form="gym-rep-edit-form" class="btn btn-primary">Save Changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Gym Exercise Modal -->
+    <div class="modal fade" id="modal-gym-exercise" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="gym-exercise-modal-title">Add Exercise</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="gym-exercise-form">
+              <div class="mb-3">
+                <label for="ge-name" class="form-label">Exercise name *</label>
+                <input id="ge-name" class="form-control" placeholder="e.g. Bench Press" maxlength="60" required />
+              </div>
+              <div>
+                <label for="ge-muscle" class="form-label">Muscle *</label>
+                <select id="ge-muscle" class="form-select" required></select>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button id="btn-save-gym-exercise" type="submit" form="gym-exercise-form" class="btn btn-primary">Save Exercise</button>
           </div>
         </div>
       </div>
