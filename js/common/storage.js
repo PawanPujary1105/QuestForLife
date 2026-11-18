@@ -33,7 +33,7 @@ export function loadState() {
     if (!Array.isArray(storedQFLData.exercises)) storedQFLData.exercises = [];
     if (!Array.isArray(storedQFLData.workoutPlans)) storedQFLData.workoutPlans = [];
     if (!Array.isArray(storedQFLData.gymLogs)) storedQFLData.gymLogs = [];
-    if (!storedQFLData.recipes) storedQFLData.recipes = [];
+    if (!Array.isArray(storedQFLData.recipes)) storedQFLData.recipes = [];
     if (!storedQFLData.outfits) storedQFLData.outfits = [];
     if (!storedQFLData.outfitLogs) storedQFLData.outfitLogs = [];
     if (!Array.isArray(storedQFLData.outfitOccasions)) {

@@ -63,16 +63,12 @@ const restCountdown = document.getElementById("gym-rest-countdown");
 const restProgress = document.getElementById("gym-rest-progress");
 const restComplete = document.getElementById("gym-rest-complete");
 const exitRestButton = document.getElementById("btn-exit-gym-rest");
-const addRepButton = document.getElementById("btn-add-gym-rep");
-const repModal = new bootstrap.Modal(document.getElementById("modal-gym-rep"));
-const repForm = document.getElementById("gym-rep-form");
-const repExerciseSelect = document.getElementById("gym-rep-exercise");
-const repCountInput = document.getElementById("gym-rep-count");
-const repWeightInput = document.getElementById("gym-rep-weight");
+const restartRestButton = document.getElementById("btn-restart-gym-rest");
 const repEditModal = new bootstrap.Modal(document.getElementById("modal-gym-rep-edit"));
 const repEditForm = document.getElementById("gym-rep-edit-form");
 const repEditTitle = document.getElementById("gym-rep-edit-modal-title");
 const repEditFields = document.getElementById("gym-rep-edit-fields");
+const addRepEditButton = document.getElementById("btn-add-gym-rep-edit");
 const exercisesList = document.getElementById("gym-exercises-list");
 const exercisesEmpty = document.getElementById("gym-exercises-empty");
 
@@ -82,6 +78,7 @@ let editingExerciseId = null;
 let editingLogId = null;
 let activeLogId = null;
 let editingRepExerciseId = null;
+let nextRepEditFieldId = 0;
 let restTimerInterval = null;
 let restTimerEndsAt = 0;
 let restTimerDurationMs = 60000;
@@ -186,55 +183,32 @@ restForm.addEventListener("submit", (event) => {
   restModal.hide();
 });
 
-exitRestButton.addEventListener("click", exitRestTimer);
-
-addRepButton.addEventListener("click", openRepModal);
-
-repForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-
-  const reps = Number(repCountInput.value);
-  const weight = Number(repWeightInput.value);
-  if (!Number.isSafeInteger(reps) || reps < 1) {
-    alert("Enter a positive whole number of reps.");
-    repCountInput.focus();
-    return;
+exitRestButton.addEventListener("click", () => {
+  if (restTimerInterval !== null) {
+    finishRestTimer();
+  } else {
+    exitRestTimer();
   }
-  if (!Number.isFinite(weight) || weight < 0) {
-    alert("Enter a valid non-negative weight.");
-    repWeightInput.focus();
-    return;
-  }
-
-  const log = questForLifeData.gymLogs.find((item) => item.id === activeLogId);
-  const plan = log && questForLifeData.workoutPlans.find((item) => item.id === log.planId);
-  const exercise = getPlanExercises(plan).find((item) => item.id === repExerciseSelect.value);
-  if (!log || !exercise) {
-    alert("Select an exercise from this workout plan.");
-    repExerciseSelect.focus();
-    return;
-  }
-
-  if (!Array.isArray(log.repEntries)) log.repEntries = [];
-  log.repEntries.push({ exerciseId: exercise.id, reps, weight });
-  saveState();
-  repModal.hide();
-  renderLogDetail(log);
 });
+restartRestButton.addEventListener("click", startRestTimer);
 
 repEditForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
   const log = questForLifeData.gymLogs.find((item) => item.id === activeLogId);
-  if (!log || !editingRepExerciseId || !Array.isArray(log.repEntries)) {
+  if (!log || !editingRepExerciseId) {
     alert("This workout entry could not be found.");
     return;
   }
 
-  const updates = [...repEditFields.querySelectorAll("[data-rep-entry-index]")].map((group) => {
+  const updates = [...repEditFields.querySelectorAll("[data-rep-entry]")].map((group) => {
     const reps = Number(group.querySelector('[data-rep-field="reps"]').value);
     const weight = Number(group.querySelector('[data-rep-field="weight"]').value);
-    return { index: Number(group.dataset.repEntryIndex), reps, weight };
+    return {
+      index: group.dataset.repEntryIndex === undefined ? null : Number(group.dataset.repEntryIndex),
+      reps,
+      weight,
+    };
   });
 
   for (const update of updates) {
@@ -246,6 +220,7 @@ repEditForm.addEventListener("submit", (event) => {
       alert("Enter a valid non-negative weight for each set.");
       return;
     }
+    if (update.index === null) continue;
     const entry = log.repEntries[update.index];
     if (!entry || entry.exerciseId !== editingRepExerciseId) {
       alert("A rep entry could not be found. Reopen the editor and try again.");
@@ -253,14 +228,57 @@ repEditForm.addEventListener("submit", (event) => {
     }
   }
 
+  if (!Array.isArray(log.repEntries)) log.repEntries = [];
+  const retainedEntryIndices = new Set(
+    updates.filter(({ index }) => index !== null).map(({ index }) => index),
+  );
   updates.forEach(({ index, reps, weight }) => {
-    log.repEntries[index].reps = reps;
-    log.repEntries[index].weight = weight;
+    if (index !== null) {
+      log.repEntries[index].reps = reps;
+      log.repEntries[index].weight = weight;
+    }
   });
+  log.repEntries = log.repEntries.filter((entry, index) => {
+    if (!entry || entry.exerciseId !== editingRepExerciseId) return true;
+    const isValidRepEntry = Number.isSafeInteger(entry.reps)
+      && entry.reps > 0
+      && Number.isFinite(entry.weight)
+      && entry.weight >= 0;
+    return !isValidRepEntry || retainedEntryIndices.has(index);
+  });
+  updates
+    .filter(({ index }) => index === null)
+    .forEach(({ reps, weight }) => {
+      log.repEntries.push({ exerciseId: editingRepExerciseId, reps, weight });
+    });
   saveState();
   editingRepExerciseId = null;
   repEditModal.hide();
   renderLogDetail(log);
+});
+
+addRepEditButton.addEventListener("click", () => {
+  const entries = [...repEditFields.querySelectorAll("[data-rep-entry]")];
+  const previousEntry = entries[entries.length - 1];
+  const previousReps = previousEntry && previousEntry.querySelector('[data-rep-field="reps"]').value;
+  const previousWeight = previousEntry && previousEntry.querySelector('[data-rep-field="weight"]').value;
+  const entry = previousEntry
+    ? { reps: previousReps, weight: previousWeight }
+    : { reps: 8, weight: 10 };
+  repEditFields.appendChild(createRepEditEntry(null, entry, entries.length));
+});
+
+repEditFields.addEventListener("click", (event) => {
+  const removeButton = event.target.closest("[data-remove-rep]");
+  if (!removeButton) return;
+
+  const entry = removeButton.closest("[data-rep-entry]");
+  if (!entry) return;
+  entry.remove();
+  [...repEditFields.querySelectorAll("[data-rep-entry]")].forEach((repEntry, index) => {
+    repEntry.querySelector(".gym-rep-entry-title").textContent = `Rep ${index + 1}`;
+    repEntry.querySelector("[data-remove-rep]").setAttribute("aria-label", `Remove rep ${index + 1}`);
+  });
 });
 
 actionButton.addEventListener("click", () => {
@@ -618,7 +636,9 @@ function startRestTimer() {
   restTimerDurationMs = durationMs;
   restTimerEndsAt = endsAt;
   restComplete.classList.add("hidden");
+  restartRestButton.classList.add("hidden");
   exitRestButton.textContent = "Stop Rest";
+  exitRestButton.classList.remove("hidden");
   restProgress.style.strokeDasharray = `${restTimerCircumference} ${restTimerCircumference}`;
   restProgress.style.strokeDashoffset = "0";
   logDetailView.classList.add("hidden");
@@ -638,11 +658,22 @@ function updateRestTimer() {
   restProgress.style.strokeDashoffset = String(restTimerCircumference * progress);
 
   if (remainingMs === 0) {
+    finishRestTimer();
+  }
+}
+
+function finishRestTimer() {
+  if (restTimerInterval !== null) {
     clearInterval(restTimerInterval);
     restTimerInterval = null;
-    restComplete.classList.remove("hidden");
-    exitRestButton.textContent = "Back to Log";
   }
+  restCountdown.textContent = "0";
+  restTimer.setAttribute("aria-label", "0 seconds remaining");
+  restProgress.style.strokeDashoffset = String(restTimerCircumference);
+  restComplete.classList.remove("hidden");
+  restartRestButton.classList.remove("hidden");
+  exitRestButton.classList.remove("hidden");
+  exitRestButton.textContent = "Back to Log";
 }
 
 function exitRestTimer() {
@@ -652,7 +683,9 @@ function exitRestTimer() {
   }
   restTimerView.classList.add("hidden");
   restComplete.classList.add("hidden");
+  restartRestButton.classList.add("hidden");
   exitRestButton.textContent = "Stop Rest";
+  exitRestButton.classList.add("hidden");
   if (activeLogId) {
     const log = questForLifeData.gymLogs.find((item) => item.id === activeLogId);
     if (log) {
@@ -901,7 +934,6 @@ function renderLogDetail(log) {
   logDetailExercises.innerHTML = "";
 
   const exercises = getPlanExercises(plan);
-  addRepButton.disabled = exercises.length === 0;
   logDetailExercisesEmpty.classList.toggle("hidden", exercises.length > 0);
 
   exercises.forEach((exercise) => {
@@ -924,22 +956,20 @@ function renderLogDetail(log) {
         && entry.reps > 0
         && Number.isFinite(entry.weight)
         && entry.weight >= 0);
-    if (repEntries.length > 0) {
-      const repsRow = document.createElement("div");
-      repsRow.className = "d-flex justify-content-between align-items-center gap-2 flex-wrap mt-2";
-      const repsSummary = document.createElement("div");
-      repsSummary.className = "small text-muted text-break";
-      repsSummary.textContent = repEntries
-        .map((entry) => `${entry.reps} × ${entry.weight}`)
-        .join(" | ");
-      const editButton = document.createElement("button");
-      editButton.type = "button";
-      editButton.className = "btn btn-outline-secondary btn-sm";
-      editButton.dataset.editReps = exercise.id;
-      editButton.textContent = "Edit Reps";
-      repsRow.append(repsSummary, editButton);
-      column.querySelector(".card-body").appendChild(repsRow);
-    }
+    const repsRow = document.createElement("div");
+    repsRow.className = "d-flex justify-content-between align-items-center gap-2 flex-wrap mt-2";
+    const repsSummary = document.createElement("div");
+    repsSummary.className = "small text-muted text-break";
+    repsSummary.textContent = repEntries.length > 0
+      ? repEntries.map((entry) => `${entry.reps} × ${entry.weight}`).join(" | ")
+      : "No reps logged";
+    const editButton = document.createElement("button");
+    editButton.type = "button";
+    editButton.className = "btn btn-outline-secondary btn-sm";
+    editButton.dataset.editReps = exercise.id;
+    editButton.textContent = "Edit Reps";
+    repsRow.append(repsSummary, editButton);
+    column.querySelector(".card-body").appendChild(repsRow);
     logDetailExercises.appendChild(column);
   });
 }
@@ -957,35 +987,51 @@ function openRepEditModal(exerciseId) {
       && Number.isFinite(entry.weight)
       && entry.weight >= 0);
 
-  if (!log || !exercise || entries.length === 0) {
-    alert("No reps are available to edit for this exercise.");
+  if (!log || !exercise) {
+    alert("This exercise could not be found in the workout.");
     return;
   }
 
   editingRepExerciseId = exerciseId;
+  nextRepEditFieldId = 0;
   repEditTitle.textContent = `Edit Reps - ${exercise.name}`;
   repEditFields.innerHTML = "";
 
   entries.forEach(({ entry, index }, displayIndex) => {
-    const section = document.createElement("section");
-    section.className = "border rounded p-3";
-    section.dataset.repEntryIndex = String(index);
-
-    const heading = document.createElement("div");
-    heading.className = "fw-semibold mb-2";
-    heading.textContent = `Rep ${displayIndex + 1}`;
-
-    const row = document.createElement("div");
-    row.className = "row g-2";
-    row.append(
-      createRepEditField("Reps", "reps", entry.reps, "1", "1", displayIndex),
-      createRepEditField("Weight", "weight", entry.weight, "0", "any", displayIndex),
-    );
-    section.append(heading, row);
-    repEditFields.appendChild(section);
+    repEditFields.appendChild(createRepEditEntry(index, entry, displayIndex));
   });
+  if (entries.length === 0) {
+    repEditFields.appendChild(createRepEditEntry(null, { reps: 8, weight: 10 }, 0));
+  }
 
   repEditModal.show();
+}
+
+function createRepEditEntry(index, entry, entryNumber) {
+  const section = document.createElement("section");
+  section.className = "border rounded p-3 pe-5 position-relative";
+  section.dataset.repEntry = "";
+  if (index !== null) section.dataset.repEntryIndex = String(index);
+
+  const heading = document.createElement("div");
+  heading.className = "fw-semibold mb-2 gym-rep-entry-title";
+  heading.textContent = `Rep ${entryNumber + 1}`;
+
+  const removeButton = document.createElement("button");
+  removeButton.type = "button";
+  removeButton.className = "btn-close gym-rep-remove-button";
+  removeButton.dataset.removeRep = "";
+  removeButton.setAttribute("aria-label", `Remove rep ${entryNumber + 1}`);
+
+  const row = document.createElement("div");
+  row.className = "row g-2";
+  row.append(
+    createRepEditField("Reps", "reps", entry ? entry.reps : "", "1", "1", nextRepEditFieldId),
+    createRepEditField("Weight", "weight", entry ? entry.weight : "", "0", "any", nextRepEditFieldId),
+  );
+  nextRepEditFieldId += 1;
+  section.append(heading, removeButton, row);
+  return section;
 }
 
 function createRepEditField(labelText, fieldName, value, min, step, entryNumber) {
@@ -1006,33 +1052,6 @@ function createRepEditField(labelText, fieldName, value, min, step, entryNumber)
   input.id = label.htmlFor;
   column.append(label, input);
   return column;
-}
-
-function openRepModal() {
-  const log = questForLifeData.gymLogs.find((item) => item.id === activeLogId);
-  const plan = log && questForLifeData.workoutPlans.find((item) => item.id === log.planId);
-  const exercises = getPlanExercises(plan);
-  if (!log || exercises.length === 0) {
-    alert("This workout plan has no exercises to log.");
-    return;
-  }
-
-  repForm.reset();
-  repExerciseSelect.innerHTML = "";
-  const placeholder = document.createElement("option");
-  placeholder.value = "";
-  placeholder.textContent = "Select an exercise";
-  placeholder.disabled = true;
-  placeholder.selected = true;
-  repExerciseSelect.appendChild(placeholder);
-
-  exercises.forEach((exercise) => {
-    const option = document.createElement("option");
-    option.value = exercise.id;
-    option.textContent = exercise.name;
-    repExerciseSelect.appendChild(option);
-  });
-  repModal.show();
 }
 
 function getPlanExercises(plan) {

@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-bs-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Quest 4 Life</title>
-    <meta name="theme-color" content="#0f172a" />
+    <meta name="theme-color" content="#fff8f3" />
     <link rel="icon" type="image/png" href="images/favicon.png" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
@@ -20,16 +20,21 @@
 
             <div>
               <h5 class="mb-0">Quest 4 Life</h5>
-              <small class="text-secondary"> Movies • Gym • Recipes </small>
+              <small class="text-secondary"> Movies • Gym • Recipes • Outfits</small>
             </div>
           </div>
 
-          <div class="btn-group d-none d-md-flex" role="group" aria-label="Sections">
-            <button class="btn btn-outline-primary active" data-view="home" aria-selected="true">Home</button>
-            <button class="btn btn-outline-primary" data-view="movies">Movie Zone</button>
-            <button class="btn btn-outline-primary" data-view="gym">Gym Zone</button>
-            <button class="btn btn-outline-primary" data-view="recipes">Recipe Zone</button>
-            <button class="btn btn-outline-primary" data-view="outfits">Outfit Zone</button>
+          <div class="d-flex align-items-center gap-2 ms-auto">
+            <div class="btn-group d-none d-md-flex" role="group" aria-label="Sections">
+              <button class="btn btn-outline-primary active" data-view="home" aria-selected="true">Home</button>
+              <button class="btn btn-outline-primary" data-view="movies">Movie Zone</button>
+              <button class="btn btn-outline-primary" data-view="gym">Gym Zone</button>
+              <button class="btn btn-outline-primary" data-view="recipes">Recipe Zone</button>
+              <button class="btn btn-outline-primary" data-view="outfits">Outfit Zone</button>
+            </div>
+            <button id="btn-theme-toggle" type="button" class="btn btn-outline-secondary" aria-label="Switch to dark mode" title="Switch to dark mode">
+              <i class="bi bi-moon-stars-fill" aria-hidden="true"></i>
+            </button>
           </div>
 
           <div class="d-md-none w-100">
@@ -217,9 +222,8 @@
                   </div>
                   <div class="d-flex align-items-center gap-2 flex-wrap">
                     <span id="gym-rest-duration" class="small text-muted">Rest: 60 seconds</span>
-                    <button id="btn-start-gym-rest" type="button" class="btn btn-primary">Start Rest</button>
                     <button id="btn-set-gym-rest" type="button" class="btn btn-outline-primary">Set Rest</button>
-                    <button id="btn-add-gym-rep" type="button" class="btn btn-outline-primary">＋ Add Rep</button>
+                    <button id="btn-start-gym-rest" type="button" class="btn btn-primary">Start Rest</button>
                   </div>
                 </div>
                 <div id="gym-log-exercises" class="row g-3"></div>
@@ -244,7 +248,10 @@
               </div>
             </div>
             <div id="gym-rest-complete" class="text-success fw-semibold mb-3 hidden" aria-live="polite">Rest complete.</div>
-            <button id="btn-exit-gym-rest" type="button" class="btn btn-outline-secondary">Stop Rest</button>
+            <div class="d-flex justify-content-center gap-2">
+              <button id="btn-restart-gym-rest" type="button" class="btn btn-primary hidden">Restart Rest</button>
+              <button id="btn-exit-gym-rest" type="button" class="btn btn-outline-secondary">Stop Rest</button>
+            </div>
           </div>
         </div>
       </section>
@@ -253,14 +260,15 @@
         <div class="panel-header">
           <div>
             <div class="title" id="recipes-title">🍳 Recipe Zone</div>
-            <div class="muted">Stub for now. Add recipes later.</div>
+            <div class="muted">Save your favorite recipes, ingredients, and instructions.</div>
           </div>
           <div class="controls">
-            <button class="btn primary" id="btn-add-recipe">＋ Add Recipe</button>
+            <button type="button" class="btn btn-primary" id="btn-add-recipe">＋ Add Recipe</button>
           </div>
         </div>
 
-        <div id="recipe-list" class="empty">No recipes added yet. (You can extend this section later.)</div>
+        <div id="recipe-list" class="row g-3 hidden"></div>
+        <div id="recipe-empty" class="empty mt-4">No recipes yet. Click <b>＋ Add Recipe</b> to create your first recipe.</div>
       </section>
 
       <section id="view-outfits" class="card shadow-sm hidden" aria-label="Outfit Zone">
@@ -335,6 +343,69 @@
         </div>
       </section>
     </main>
+
+    <!-- Add Recipe Modal -->
+    <div class="modal fade" id="modal-recipe" tabindex="-1">
+      <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Recipe</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="recipe-form">
+              <div class="mb-3">
+                <label for="recipe-name" class="form-label">Recipe name *</label>
+                <input id="recipe-name" type="text" class="form-control" maxlength="120" required />
+              </div>
+              <fieldset class="mb-3">
+                <legend class="form-label">Ingredients *</legend>
+                <div id="recipe-ingredient-fields" class="d-flex flex-column gap-2">
+                  <input id="recipe-ingredient-1" type="text" class="form-control" data-recipe-ingredient aria-label="Ingredient 1" />
+                </div>
+                <button id="btn-add-recipe-ingredient" type="button" class="btn btn-outline-secondary btn-sm mt-2">＋ Add Ingredient</button>
+              </fieldset>
+              <fieldset>
+                <legend class="form-label">Instructions *</legend>
+                <div id="recipe-instruction-fields" class="d-flex flex-column gap-2">
+                  <textarea id="recipe-instruction-1" class="form-control" data-recipe-instruction rows="2" aria-label="Instruction 1"></textarea>
+                </div>
+                <button id="btn-add-recipe-instruction" type="button" class="btn btn-outline-secondary btn-sm mt-2">＋ Add Instruction</button>
+              </fieldset>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" form="recipe-form" class="btn btn-primary">Save Recipe</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recipe Details Modal -->
+    <div class="modal fade" id="modal-recipe-details" tabindex="-1">
+      <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 id="recipe-details-title" class="modal-title"></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <section class="mb-4">
+              <h6>Ingredients</h6>
+              <ul id="recipe-details-ingredients" class="recipe-detail-list"></ul>
+            </section>
+            <section>
+              <h6>Instructions</h6>
+              <ol id="recipe-details-instructions" class="recipe-detail-list"></ol>
+            </section>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Add Movie Modal -->
     <div class="modal fade" id="modal-movie" tabindex="-1">
@@ -498,38 +569,6 @@
       </div>
     </div>
 
-    <!-- Add Gym Rep Modal -->
-    <div class="modal fade" id="modal-gym-rep" tabindex="-1">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Add Rep</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            <form id="gym-rep-form">
-              <div class="mb-3">
-                <label for="gym-rep-exercise" class="form-label">Exercise *</label>
-                <select id="gym-rep-exercise" class="form-select" required></select>
-              </div>
-              <div class="mb-3">
-                <label for="gym-rep-count" class="form-label">Number of reps *</label>
-                <input id="gym-rep-count" type="number" class="form-control" min="1" step="1" required />
-              </div>
-              <div>
-                <label for="gym-rep-weight" class="form-label">Weight *</label>
-                <input id="gym-rep-weight" type="number" class="form-control" min="0" step="any" required />
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" form="gym-rep-form" class="btn btn-primary">Save Rep</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Edit Gym Reps Modal -->
     <div class="modal fade" id="modal-gym-rep-edit" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -541,6 +580,9 @@
           <div class="modal-body">
             <form id="gym-rep-edit-form">
               <div id="gym-rep-edit-fields" class="d-flex flex-column gap-3"></div>
+              <div class="d-flex justify-content-center mt-3">
+                <button id="btn-add-gym-rep-edit" type="button" class="btn btn-outline-primary rounded-circle gym-rep-add-button" aria-label="Add rep" title="Add rep"><span aria-hidden="true">+</span></button>
+              </div>
             </form>
           </div>
           <div class="modal-footer">

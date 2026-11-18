@@ -41,6 +41,28 @@
   line-height: 1;
 }
 
+.gym-rep-remove-button {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+}
+
+.gym-rep-add-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  font-size: 2.25rem;
+  line-height: 1;
+}
+
+.gym-rep-add-button > span {
+  display: block;
+  transform: translateY(-0.08em);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .gym-rest-progress {
     transition: none;
